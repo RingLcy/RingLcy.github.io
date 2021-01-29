@@ -53,7 +53,7 @@ SpLsaModeInitialize		=	kssp_SpLsaModeInitialize
 
 `SpLsaModeInitialize`是SSP的初始化函数，由LSA加载自己时调用。`SpLsaModeInitialize`的主要功能是给参数*ppTables*赋值，用于告诉LSA各个回调函数的地址；*ppTables* 指向[SECPKG_FUNCTION_TABLE](https://docs.microsoft.com/en-us/windows/win32/api/ntsecpkg/ns-ntsecpkg-secpkg_function_table)结构体，LSA需要SSP实现的函数指针都包含在此结构体内。
 
-![image-20201018135645727](C:\Users\DELL\AppData\Roaming\Typora\typora-user-images\image-20201018135645727.png)
+![image-20201018135645727](/assets/img/image-20201018135645727.png)
 
 mimilib SSP就实现了`SpLsaModeInitialize`及以下4个回调函数，相关实现都在[kssp.c](https://github.com/gentilkiwi/mimikatz/blob/master/mimilib/kssp.c)
 
@@ -149,7 +149,7 @@ int main(int argc, char **argv) {
 }
 ```
 
-注: `DeleteSecurityPackageA`删除SSP不起作用，可用3gStudent的[FreeDll](https://github.com/3gstudent/Homework-of-C-Language/blob/master/FreeDll.cpp)卸载mimilib.dll，见[FreeDll_x64.exe](tools\FreeDll_x64.exe) 
+注: `DeleteSecurityPackageA`删除SSP不起作用，可用3gStudent的[FreeDll](https://github.com/3gstudent/Homework-of-C-Language/blob/master/FreeDll.cpp)卸载mimilib.dll
 
 
 

