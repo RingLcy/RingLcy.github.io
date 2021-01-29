@@ -2,9 +2,9 @@
 
 # jekyll-seo-tag settings › https://github.com/jekyll/jekyll-seo-tag/blob/master/docs/usage.md
 # --------------------------
-title: Blog                          # the main title
+title: RingLcy的学习笔记                          # the main title
 
-tagline: A text-focused Jekyll theme   # it will display as the sub-title
+#tagline:    # it will display as the sub-title
 
 description: >-                        # used by seo meta and the atom feed
   A minimal, portfolio, sidebar,
@@ -82,7 +82,7 @@ theme_mode:   # [light|dark]
 img_cdn: ''
 
 # the avatar on sidebar, support local or CORS resources
-avatar: https://cdn.jsdelivr.net/gh/cotes2020/chirpy-images/commons/avatar.jpg
+avatar: /assets/img/favicons/ms-icon-144x144.png
 
 # boolean type, the global switch for ToC in posts.
 toc: true
