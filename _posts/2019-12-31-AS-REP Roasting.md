@@ -44,7 +44,7 @@ Kerberos preauthentication的作用：
 
 注意抓包前先用**KERBEROS::Purge** 清理所有Kerberos ticket，首先看一个带Pre-Authentication的流量，在第二个AS-REQ里，Client会发送密码Hash加密过的timestamp, KDC如果解密成功，即可验证Client。
 
- [ASExchange_WithPreau.pcapng](https://github.com/RingLcy/Pentestlab/blob/master/traffic/ASExchange_WithPreau.pcapng) 
+ [ASExchange_WithPreau.pcapng](https://github.com/RingLcy/BlogStorage/tree/main/traffic/ASExchange_WithPreau.pcapng) 
 
 ![image-20201229095230284](/assets/img/image-20201229095230284.png)
 
@@ -52,7 +52,7 @@ Kerberos preauthentication的作用：
 
 再看一个不带Pre-Authentication的流量，可以发现AS-REQ中没有entrypted timestamp字段，即不需要让KDC验证身份。
 
- [ASExchange_WithoutPreau.pcapng](https://github.com/RingLcy/Pentestlab/blob/master/traffic/ASExchange_WithoutPreau.pcapng) 
+ [ASExchange_WithoutPreau.pcapng](https://github.com/RingLcy/BlogStorage/tree/main/traffic/ASExchange_WithoutPreau.pcapng) 
 
 ![image-20201229095616210](/assets/img/image-20201229095616210.png)
 
@@ -67,7 +67,7 @@ Kerberos preauthentication的作用：
 
 最终AS-REP Roasting流量如下：
 
- [AS-REPRoasting.pcapng](https://github.com/RingLcy/Pentestlab/blob/master/traffic/AS-REPRoasting.pcapng) 
+ [AS-REPRoasting.pcapng](https://github.com/RingLcy/BlogStorage/tree/main/traffic/AS-REPRoasting.pcapng) 
 
 ![image-20201229100542623](/assets/img/image-20201229100542623.png)
 
