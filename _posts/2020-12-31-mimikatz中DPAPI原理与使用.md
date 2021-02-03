@@ -1,6 +1,6 @@
 ---
 title: DPAPI
-date: 2019-12-31 23:59:59 +0800
+date: 2020-12-31 23:59:59 +0800
 categories: [域安全, TA0006凭据访问]
 tags: [DPAPI, mimikatz, TA0006凭据访问]     # TAG names should always be lowercase
 typora-root-url: ..

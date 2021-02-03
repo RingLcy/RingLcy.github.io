@@ -1,6 +1,6 @@
 ---
 title: Powershell使用WMI
-date: 2019-12-31 23:59:59 +0800
+date: 2020-12-31 23:59:59 +0800
 categories: [域安全, TA0002执行]
 tags: [powershell, wmi, TA0002执行]     # TAG names should always be lowercase
 typora-root-url: ..

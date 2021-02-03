@@ -1,6 +1,6 @@
 ---
 title: Zerologon CVE-2020-1472 原理及利用
-date: 2019-12-31 23:59:52 +0800
+date: 2020-12-31 23:59:52 +0800
 categories: [域安全, TA0004权限升级]
 tags: [Zerologon, TA0004权限升级]     # TAG names should always be lowercase
 typora-root-url: ..

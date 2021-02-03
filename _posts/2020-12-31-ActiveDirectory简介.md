@@ -1,6 +1,6 @@
 ---
 title: Active Directory简介
-date: 2019-12-31 23:59:59 +0800
+date: 2020-12-31 23:59:59 +0800
 categories: [域安全, 背景知识]
 tags: [ActiveDirectory, ldap]     # TAG names should always be lowercase
 typora-root-url: ..

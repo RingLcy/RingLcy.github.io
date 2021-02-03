@@ -1,6 +1,6 @@
 ---
 title: RID Hijacking
-date: 2019-12-31 23:59:53 +0800
+date: 2020-12-31 23:59:53 +0800
 categories: [域安全, TA0003持久化]
 tags: [RIDHijacking, TA0003持久化]     # TAG names should always be lowercase
 typora-root-url: ..

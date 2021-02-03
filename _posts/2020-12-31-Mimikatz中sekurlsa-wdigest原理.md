@@ -1,6 +1,6 @@
 ---
 title: Mimikatz sekurlsa::wdigest原理
-date: 2019-12-31 23:59:45 +0800
+date: 2020-12-31 23:59:45 +0800
 categories: [域安全, TA0006凭据访问]
 tags: [mimikatz, TA0006凭据访问]     # TAG names should always be lowercase
 typora-root-url: ..
