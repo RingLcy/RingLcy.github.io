@@ -1,0 +1,595 @@
+<!DOCTYPE html><html lang="en" mode="light" ><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"><meta name="pv-cache-enabled" content="false"><meta name="generator" content="Jekyll v4.2.0" /><meta property="og:title" content="Powershell使用WMI" /><meta name="author" content="RingLcy" /><meta property="og:locale" content="en_US" /><meta name="description" content="一、WMI" /><meta property="og:description" content="一、WMI" /><link rel="canonical" href="https://ringlcy.github.io/posts/Powershell%E4%BD%BF%E7%94%A8WMI/" /><meta property="og:url" content="https://ringlcy.github.io/posts/Powershell%E4%BD%BF%E7%94%A8WMI/" /><meta property="og:site_name" content="我的学习笔记" /><meta property="og:type" content="article" /><meta property="article:published_time" content="2020-12-31T23:59:59+08:00" /><meta name="twitter:card" content="summary" /><meta property="twitter:title" content="Powershell使用WMI" /><meta name="google-site-verification" content="google_meta_tag_verification" /> <script type="application/ld+json"> {"author":{"@type":"Person","name":"RingLcy"},"description":"一、WMI","url":"https://ringlcy.github.io/posts/Powershell%E4%BD%BF%E7%94%A8WMI/","@type":"BlogPosting","headline":"Powershell使用WMI","dateModified":"2020-12-31T23:59:59+08:00","datePublished":"2020-12-31T23:59:59+08:00","mainEntityOfPage":{"@type":"WebPage","@id":"https://ringlcy.github.io/posts/Powershell%E4%BD%BF%E7%94%A8WMI/"},"@context":"https://schema.org"}</script><title>Powershell使用WMI | 我的学习笔记</title><link rel="shortcut icon" href="/assets/img/favicons/favicon.ico" type="image/x-icon"><link rel="icon" href="/assets/img/favicons/favicon.ico" type="image/x-icon"><link rel="apple-touch-icon" href="/assets/img/favicons/apple-icon.png"><link rel="apple-touch-icon" href="/assets/img/favicons/apple-icon-precomposed.png"><link rel="apple-touch-icon" sizes="57x57" href="/assets/img/favicons/apple-icon-57x57.png"><link rel="apple-touch-icon" sizes="60x60" href="/assets/img/favicons/apple-icon-60x60.png"><link rel="apple-touch-icon" sizes="72x72" href="/assets/img/favicons/apple-icon-72x72.png"><link rel="apple-touch-icon" sizes="76x76" href="/assets/img/favicons/apple-icon-76x76.png"><link rel="apple-touch-icon" sizes="114x114" href="/assets/img/favicons/apple-icon-114x114.png"><link rel="apple-touch-icon" sizes="120x120" href="/assets/img/favicons/apple-icon-120x120.png"><link rel="apple-touch-icon" sizes="144x144" href="/assets/img/favicons/apple-icon-144x144.png"><link rel="apple-touch-icon" sizes="152x152" href="/assets/img/favicons/apple-icon-152x152.png"><link rel="apple-touch-icon" sizes="180x180" href="/assets/img/favicons/apple-icon-180x180.png"><link rel="icon" type="image/png" sizes="192x192" href="/assets/img/favicons/android-icon-192x192.png"><link rel="icon" type="image/png" sizes="32x32" href="/assets/img/favicons/favicon-32x32.png"><link rel="icon" type="image/png" sizes="96x96" href="/assets/img/favicons/favicon-96x96.png"><link rel="icon" type="image/png" sizes="16x16" href="/assets/img/favicons/favicon-16x16.png"><link rel="manifest" href="/assets/img/favicons/manifest.json"><meta name='msapplication-config' content='/assets/img/favicons/browserconfig.xml'><meta name="msapplication-TileColor" content="#ffffff"><meta name="msapplication-TileImage" content="/assets/img/favicons/ms-icon-144x144.png"><meta name="theme-color" content="#ffffff"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous"><link rel="dns-prefetch" href="https://fonts.gstatic.com"><link rel="preconnect" href="https://www.google-analytics.com" crossorigin="use-credentials"><link rel="dns-prefetch" href="https://www.google-analytics.com"><link rel="preconnect" href="https://www.googletagmanager.com" crossorigin="anonymous"><link rel="dns-prefetch" href="https://www.googletagmanager.com"><link rel="preconnect" href="cdn.jsdelivr.net"><link rel="dns-prefetch" href="cdn.jsdelivr.net"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" integrity="sha256-LA89z+k9fjgMKQ/kq4OO2Mrf8VltYml/VES+Rg0fh20=" crossorigin="anonymous"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.11.2/css/all.min.css" integrity="sha256-+N4/V/SbAFiW1MPBCXnfnP9QSN3+Keu+NlB+0ev/YKQ=" crossorigin="anonymous"><link rel="stylesheet" href="/assets/css/style.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/afeld/bootstrap-toc@1.0.1/dist/bootstrap-toc.min.css"> <script src="https://cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script> <script defer src="https://cdn.jsdelivr.net/combine/npm/popper.js@1.15.0,npm/bootstrap@4/dist/js/bootstrap.min.js"></script> <script defer src="/assets/js/dist/post.min.js"></script> <script defer src="/app.js"></script> <script defer src="https://www.googletagmanager.com/gtag/js?id="></script> <script> document.addEventListener("DOMContentLoaded", function(event) { window.dataLayer = window.dataLayer || []; function gtag(){dataLayer.push(arguments);} gtag('js', new Date()); gtag('config', ''); }); </script><body data-spy="scroll" data-target="#toc"><div id="sidebar" class="d-flex flex-column align-items-end"><div class="profile-wrapper text-center"><div id="avatar"> <a href="/" alt="avatar" class="mx-auto"> <img src="/assets/img/favicons/ms-icon-144x144.png" alt="avatar" onerror="this.style.display='none'"> </a></div><div class="site-title mt-3"> <a href="/">我的学习笔记</a></div><div class="site-subtitle font-italic">种一棵树最好的时间是五年前，其次是现在</div></div><ul class="w-100"><li class="nav-item"> <a href="/" class="nav-link"> <i class="fa-fw fas fa-home ml-xl-3 mr-xl-3 unloaded"></i> <span>HOME</span> </a><li class="nav-item"> <a href="/tabs/categories/" class="nav-link"> <i class="fa-fw fas fa-stream ml-xl-3 mr-xl-3 unloaded"></i> <span>CATEGORIES</span> </a><li class="nav-item"> <a href="/tabs/tags/" class="nav-link"> <i class="fa-fw fas fa-tags ml-xl-3 mr-xl-3 unloaded"></i> <span>TAGS</span> </a><li class="nav-item"> <a href="/tabs/archives/" class="nav-link"> <i class="fa-fw fas fa-archive ml-xl-3 mr-xl-3 unloaded"></i> <span>ARCHIVES</span> </a><li class="nav-item"> <a href="/tabs/about/" class="nav-link"> <i class="fa-fw fas fa-info ml-xl-3 mr-xl-3 unloaded"></i> <span>ABOUT</span> </a></ul><div class="sidebar-bottom mt-auto d-flex flex-wrap justify-content-center"> <a href="https://github.com/RingLcy" aria-label="github" target="_blank" rel="noopener"> <i class="fab fa-github-alt"></i> </a> <a href="https://twitter.com/" aria-label="twitter" target="_blank" rel="noopener"> <i class="fab fa-twitter"></i> </a> <a href=" javascript:location.href = 'mailto:' + ['',''].join('@')" aria-label="email" > <i class="fas fa-envelope"></i> </a> <a href="/feed.xml" aria-label="rss" > <i class="fas fa-rss"></i> </a></div></div><div id="topbar-wrapper" class="row justify-content-center topbar-down"><div id="topbar" class="col-11 d-flex h-100 align-items-center justify-content-between"> <span id="breadcrumb"> <span> <a href="/"> Posts </a> </span> <span>Powershell使用WMI</span> </span> <i id="sidebar-trigger" class="fas fa-bars fa-fw"></i><div id="topbar-title"> Post</div><i id="search-trigger" class="fas fa-search fa-fw"></i> <span id="search-wrapper" class="align-items-center"> <i class="fas fa-search fa-fw"></i> <input class="form-control" id="search-input" type="search" aria-label="search" placeholder="Search..."> <i class="fa fa-times-circle fa-fw" id="search-cleaner"></i> </span> <span id="search-cancel" >Cancel</span></div></div><div id="main-wrapper"><div id="main"><div class="row"><div id="post-wrapper" class="col-12 col-lg-11 col-xl-8"><div class="post pl-1 pr-1 pl-sm-2 pr-sm-2 pl-md-4 pr-md-4"><h1 data-toc-skip>Powershell使用WMI</h1><div class="post-meta text-muted d-flex flex-column"><div> <span class="timeago " data-toggle="tooltip" data-placement="bottom" title="Thu, Dec 31, 2020, 11:59 PM +0800" > Dec 31, 2020 <i class="unloaded">2020-12-31T23:59:59+08:00</i> </span> by <span class="author"> RingLcy </span></div><div> <span class="readtime" data-toggle="tooltip" data-placement="bottom" title="2782 words">15 min</span></div></div><div class="post-content"><h1 id="一wmi">一、WMI</h1><ul><li><p><a href="https://docs.microsoft.com/en-us/windows/win32/wmisdk/wmi-start-page">WMI</a>提供了一套通用的API使得常用脚本语言也能很方便地管理windows资源，比如powershell，VBScript等；通过它可以访问、配置、管理和监视所有的几乎所有的 Windows 资源</p><li><p>WMI class是由不同的WMI Provider实现的，类别、目标相同的class会放在不同的namespace下。例如 Win32_Process和Win32_Service是由CIMWin32 Provider提供的，它们属于Root\CIMV2 命名空间，分别代表着windows 进程和服务。</p><li><p><a href="https://powershell.org/2013/03/wmi-explorer/">WMI Explorer</a>是一个powershell-based wmi查看工具。</p><p><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-src="/assets/img/1963614-20200328142854185-1119856276.png" alt="img" /></p></ul><h2 id="1-wmi-providers">1. <a href="https://docs.microsoft.com/en-us/windows/win32/wmisdk/wmi-providers">WMI Providers</a></h2><p>WMI class是由WMI Provider实现的，在类定义里可以看到其provider，不过使用WMI不太需要Provider的细节，大多数时候知道namespace和class就可以了。</p><p>最常用的是<a href="https://docs.microsoft.com/en-us/windows/win32/cimwin32prov/win32-provider">Win32 Provider</a>。</p><p><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-src="/assets/img/1963614-20200326202437395-1661280294.png" alt="img" /></p><h2 id="2-wmi-classes"><strong>2. <a href="https://docs.microsoft.com/en-us/windows/win32/wmisdk/wmi-classes">WMI Classes</a></strong></h2><p><strong>WMI有4类Class</strong></p><ul><li><p><strong><a href="https://docs.microsoft.com/en-us/windows/win32/wmisdk/wmi-system-classes">WMI System Classes</a></strong></p><p>WMI中预定义的系统类，这一类class都以__开头， 类似于SQL Server中的系统表，属于所有命名空间。</p></ul><p>​ 比较常用的是<a href="https://docs.microsoft.com/en-us/windows/win32/wmisdk/--eventconsumer">__EventConsumer</a>，<a href="https://docs.microsoft.com/en-us/windows/win32/wmisdk/--eventfilter">__EventFilter</a>，<a href="https://docs.microsoft.com/en-us/windows/win32/wmisdk/--filtertoconsumerbinding">__FilterToConsumerBinding</a>这个组合，用于WMI订阅；</p><p>​ 还有<a href="https://docs.microsoft.com/en-us/windows/win32/wmisdk/--instancecreationevent">__InstanceCreationEvent</a>，<a href="https://docs.microsoft.com/en-us/windows/win32/wmisdk/--instancedeletionevent">__InstanceDeletionEvent</a>， <a href="https://docs.microsoft.com/en-us/windows/win32/wmisdk/--instancemodificationevent">__InstanceModificationEvent</a>，当命名空间中的实例发生变化，比如新创建一个进程，就会触发<a href="https://docs.microsoft.com/en-us/windows/win32/wmisdk/--instancecreationevent">__InstanceCreationEvent</a>这个内部事件，因此常用与WMI订阅中。</p><ul><li><strong><a href="https://docs.microsoft.com/en-us/windows/win32/wmisdk/msft-classes">MSFT Classes</a></strong></ul><p>　　还没用过，见官方介绍吧</p><ul><li><strong><a href="https://docs.microsoft.com/en-us/windows/win32/wmisdk/cimclas">CIM Classes</a></strong></ul><p>　　我把它理解为WMI的核心类、基类，当想自定义WMI Class时，就可以继承CIM Classes中的类，实现自定义的类功能。如上述Win32_Process类所示，<a href="https://docs.microsoft.com/windows/desktop/CIMWin32Prov/win32-provider">WMI Win32 Classes</a>都继承于CIM Classes中对应的class。</p><ul><li><strong><a href="https://docs.microsoft.com/en-us/windows/win32/wmisdk/standard-consumer-classes">Standard Consumer Classes</a></strong></ul><p>　　WMI标准消费者类，比如当进程创建事件触发，使用LogFileEventConsumer类来记录日志。它们是__EventConsumer的子类，属于Root\subscription命名空间。</p><div class="table-wrapper"><table><thead><tr><th>Class<th>Description<tbody><tr><td><a href="https://docs.microsoft.com/en-us/windows/win32/wmisdk/activescripteventconsumer">ActiveScriptEventConsumer</a><td>Executes a predefined script in an arbitrary scripting language when an event is delivered to it. Example: <a href="https://docs.microsoft.com/en-us/windows/win32/wmisdk/running-a-script-based-on-an-event">Running a Script Based on an Event</a><tr><td><a href="https://docs.microsoft.com/en-us/windows/win32/wmisdk/commandlineeventconsumer">CommandLineEventConsumer</a><td>Launches an arbitrary process in the local system context when an event is delivered to it. Example: <a href="https://docs.microsoft.com/en-us/windows/win32/wmisdk/running-a-program-from-the-command-line-based-on-an-event">Running a Program from the Command Line Based on an Event</a><tr><td><a href="https://docs.microsoft.com/en-us/windows/win32/wmisdk/logfileeventconsumer">LogFileEventConsumer</a><td>Writes customized strings to a text log file when events are delivered to it. Example: <a href="https://docs.microsoft.com/en-us/windows/win32/wmisdk/writing-to-a-log-file-based-on-an-event">Writing to a Log File Based on an Event</a><tr><td><a href="https://docs.microsoft.com/en-us/windows/win32/wmisdk/nteventlogeventconsumer">NTEventLogEventConsumer</a><td>Logs a specific message to the Windows event log when an event is delivered to it. Example: <a href="https://docs.microsoft.com/en-us/windows/win32/wmisdk/logging-to-nt-event-log-based-on-an-event">Logging to NT Event Log Based on an Event</a><tr><td><a href="https://docs.microsoft.com/en-us/windows/win32/wmisdk/scriptingstandardconsumersetting">ScriptingStandardConsumerSetting</a><td>Provides registration data common to all instances of the <a href="https://docs.microsoft.com/en-us/windows/win32/wmisdk/activescripteventconsumer">ActiveScriptEventConsumer</a> class.<tr><td><a href="https://docs.microsoft.com/en-us/windows/win32/wmisdk/smtpeventconsumer">SMTPEventConsumer</a><td>Sends an email message using SMTP each time an event is delivered to it. Example: <a href="https://docs.microsoft.com/en-us/windows/win32/wmisdk/sending-e-mail-based-on-an-event">Sending Email Based on an Event</a></table></div><h2 id="3-wmi-event">3. WMI Event</h2><ul><li><strong><a href="https://docs.microsoft.com/en-us/windows/win32/wmisdk/determining-the-type-of-event-to-receive#intrinsic-events">Intrinsic Events</a></strong></ul><p>　　内部事件，指当WMI namespace，class，instance发生创建、修改、删除而产生的事件，比如新建一个Win32_Process实例就会产生<a href="https://docs.microsoft.com/en-us/windows/win32/wmisdk/--instancecreationevent">__InstanceCreationEvent</a>实例。内部事件需要使用WITHN轮询获取，内部事件列表如下：</p><div class="table-wrapper"><table><thead><tr><th>System class<th>Description<tbody><tr><td><a href="https://docs.microsoft.com/en-us/windows/win32/wmisdk/--classcreationevent">__ClassCreationEvent</a><td>Notifies a consumer when a class is created.<tr><td><a href="https://docs.microsoft.com/en-us/windows/win32/wmisdk/--classdeletionevent">__ClassDeletionEvent</a><td>Notifies a consumer when a class is deleted.<tr><td><a href="https://docs.microsoft.com/en-us/windows/win32/wmisdk/--classmodificationevent">__ClassModificationEvent</a><td>Notifies a consumer when a class is modified.<tr><td><a href="https://docs.microsoft.com/en-us/windows/win32/wmisdk/--instancecreationevent">__InstanceCreationEvent</a><td>Notifies a consumer when a class instance is created.<tr><td><a href="https://docs.microsoft.com/en-us/windows/win32/wmisdk/--instanceoperationevent">__InstanceOperationEvent</a><td>Notifies a consumer when any instance event occurs, such as creation, deletion, or modification of the instance. You can use this class in queries to get all types events associated with an instance.<tr><td><a href="https://docs.microsoft.com/en-us/windows/win32/wmisdk/--instancedeletionevent">__InstanceDeletionEvent</a><td>Notifies a consumer when an instance is deleted.<tr><td><a href="https://docs.microsoft.com/en-us/windows/win32/wmisdk/--instancemodificationevent">__InstanceModificationEvent</a><td>Notifies a consumer when an instance is modified.<tr><td><a href="https://docs.microsoft.com/en-us/windows/win32/wmisdk/--namespacecreationevent">__NamespaceCreationEvent</a><td>Notifies a consumer when a namespace is created.<tr><td><a href="https://docs.microsoft.com/en-us/windows/win32/wmisdk/--namespacedeletionevent">__NamespaceDeletionEvent</a><td>Notifies a consumer when a namespace is deleted.<tr><td><a href="https://docs.microsoft.com/en-us/windows/win32/wmisdk/--namespacemodificationevent">__NamespaceModificationEvent</a><td>Notifies a consumer when a namespace is modified.<tr><td><a href="https://docs.microsoft.com/en-us/windows/win32/wmisdk/--consumerfailureevent">__ConsumerFailureEvent</a><td>Notifies a consumer when some other event is dropped due to a failure on the part of an event consumer.<tr><td><a href="https://docs.microsoft.com/en-us/windows/win32/wmisdk/--eventdroppedevent">__EventDroppedEvent</a><td>Notifies a consumer when some other event is dropped instead of being delivered to the requesting event consumer.<tr><td><a href="https://docs.microsoft.com/en-us/windows/win32/wmisdk/--eventqueueoverflowevent">__EventQueueOverflowEvent</a><td>Notifies a consumer when an event is dropped as a result of a delivery queue overflow.<tr><td><a href="https://docs.microsoft.com/en-us/windows/win32/wmisdk/--methodinvocationevent">__MethodInvocationEvent</a><td>Notifies a consumer when a method call event occurs.</table></div><ul><li><strong><a href="https://docs.microsoft.com/en-us/windows/win32/wmisdk/determining-the-type-of-event-to-receive#extrinsic-events">Extrinsic Events</a></strong></ul><p>　　外部事件是受管系统中某些预定义条件的发生。外部事件的示例包括系统重新启动，注册表修改，严重错误和网络拥塞。与内部事件相比，外部事件发生时立刻被触发，不需要轮询。外部事件类均继承自__ExtrinsicEvent，MSDN给了使用Registry*Event的<a href="https://docs.microsoft.com/en-us/windows/win32/wmisdk/creating-a-proper-where-clause-for-the-registry-provider">例子</a>，常用到的外部事件如下:</p><div class="language-plaintext highlighter-rouge"><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+</pre><td class="rouge-code"><pre>ROOT\CIMV2:Win32_ComputerShutdownEvent
+ROOT\CIMV2:Win32_IP4RouteTableEvent
+ROOT\CIMV2:Win32_ProcessStartTrace
+ROOT\CIMV2:Win32_ModuleLoadTrace
+ROOT\CIMV2:Win32_ThreadStartTrace
+ROOT\CIMV2:Win32_VolumeChangeEvent
+ROOT\CIMV2:Win32_PowerManagementEvent
+ROOT\CIMV2: Msft_WmiProvider* 
+ROOT\DEFAULT:RegistryKeyChangeEvent 
+ROOT\DEFAULT:RegistryValueChangeEvent
+</pre></table></code></div></div><h2 id="4-systemmanagement-namespace-">4. <a href="https://docs.microsoft.com/en-us/dotnet/api/system.management?view=netframework-4.8">System.Management Namespace </a></h2><p>.Net中用System.Management namespace下的类与WMI交互，以下三个是出镜率比较高的class。</p><p><a href="https://docs.microsoft.com/en-us/dotnet/api/system.management.managementclass?view=netframework-4.8">ManagementClass</a></p><p><a href="https://docs.microsoft.com/en-us/dotnet/api/system.management.managementobject?view=netframework-4.8">ManagementObject</a></p><p><a href="https://docs.microsoft.com/en-us/dotnet/api/system.management.managementobjectcollection?view=netframework-4.8">ManagementObjectCollection</a></p><p>ManagementObject对应一个WMI Class实例，ManagementClass是ManagementObject的管理类，通过ManagementClass.CreateInstance()能创建一个实例，ManagementClass.GetInstances()返回一个ManagementObjectCollection对象，即对应WMI Class所有实例。</p><div class="language-plaintext highlighter-rouge"><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+</pre><td class="rouge-code"><pre>$manage_class=([System.Management.ManagementClass]"\\.\root\cimv2:Win32_Process")
+$manage_object=([System.Management.ManagementClass]"\\.\root\cimv2:Win32_Process").CreateInstance()
+$manage_objects=([System.Management.ManagementClass]"\\.\root\cimv2:Win32_Process").GetInstances()
+</pre></table></code></div></div><h1 id="二红队应用">二、红队应用</h1><p>整理、参考自：</p><p>http://drops.xmd5.com/static/drops/tips-8189.html</p><p>http://drops.xmd5.com/static/drops/tips-8260.html</p><p><a href="https://wooyun.js.org/drops/WMI Defense.html">https://wooyun.js.org/drops/WMI%20Defense.html</a></p><p>https://3gstudent.github.io/3gstudent.github.io/Study-Notes-of-WMI-Persistence-using-wmic.exe/</p><h2 id="1-侦察">1. 侦察</h2><p>操作系统相关信息</p><div class="language-plaintext highlighter-rouge"><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+</pre><td class="rouge-code"><pre>Get-WmiObject -Namespace ROOT\CIMV2 -Class Win32_OperatingSystem
+wmic /NAMESPACE:"\\root\CIMV2" PATH Win32_OperatingSystem GET /all /FORMAT:list
+wmic os  GET /all /FORMAT:list
+
+Get-WmiObject -Namespace ROOT\CIMV2 -Class Win32_ComputerSystem
+Get-WmiObject -Namespace ROOT\CIMV2 -Class Win32_BIOS
+</pre></table></code></div></div><p>文件/目录列表</p><div class="language-plaintext highlighter-rouge"><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+</pre><td class="rouge-code"><pre>Get-WmiObject -Namespace ROOT\CIMV2 -Class CIM_DataFile
+</pre></table></code></div></div><p>磁盘卷列表</p><div class="language-plaintext highlighter-rouge"><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+</pre><td class="rouge-code"><pre>Get-WmiObject -Namespace ROOT\CIMV2 -Class Win32_Volume
+</pre></table></code></div></div><p><a href="https://docs.microsoft.com/zh-cn/windows/win32/wmisdk/wmi-tasks--registry?redirectedfrom=MSDN">注册表操作</a></p><div class="language-plaintext highlighter-rouge"><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+</pre><td class="rouge-code"><pre>$HKEY_CURRENT_USER =&amp;H80000001
+$computer ='.'
+$reg = [WMIClass]"ROOT\DEFAULT:StdRegProv"
+$Key = "Console"
+$Value = "HistoryBufferSize"
+$results = $reg.GetDWORDValue($HKEY_CURRENT_USER, $Key, $value)
+"Current History Buffer Size: {0}" -f $results.uValue
+</pre></table></code></div></div><div class="language-plaintext highlighter-rouge"><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+</pre><td class="rouge-code"><pre>wmic /NAMESPACE:"\\root\DEFAULT" path stdregprov call GetDWORDValue ^&amp;H80000001,"Console", "HistoryBufferSize"
+</pre></table></code></div></div><p>当前进程</p><div class="language-plaintext highlighter-rouge"><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+</pre><td class="rouge-code"><pre>wmic /NAMESPACE:"\\root\CIMV2" PATH Win32_Process GET Caption /FORMAT:list
+Get-WmiObject -Namespace ROOT\CIMV2 -Class Win32_Process
+</pre></table></code></div></div><p>列举服务</p><div class="language-plaintext highlighter-rouge"><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+</pre><td class="rouge-code"><pre>Get-WmiObject -Namespace ROOT\CIMV2 -Class Win32_Service
+</pre></table></code></div></div><p>日志</p><div class="language-plaintext highlighter-rouge"><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+</pre><td class="rouge-code"><pre>Get-WmiObject -Namespace ROOT\CIMV2 -Class Win32_NtLogEvent
+</pre></table></code></div></div><p>登陆账户</p><div class="language-plaintext highlighter-rouge"><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+</pre><td class="rouge-code"><pre>Get-WmiObject -Namespace ROOT\CIMV2 -Class Win32_LoggedOnUser
+</pre></table></code></div></div><p>共享</p><div class="language-plaintext highlighter-rouge"><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+</pre><td class="rouge-code"><pre>Get-WmiObject -Namespace ROOT\CIMV2 -Class Win32_Share
+</pre></table></code></div></div><p>补丁</p><div class="language-plaintext highlighter-rouge"><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+</pre><td class="rouge-code"><pre>Get-WmiObject -Namespace ROOT\CIMV2 -Class Win32_QuickFixEngineering
+</pre></table></code></div></div><p>杀毒软件</p><div class="language-plaintext highlighter-rouge"><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+</pre><td class="rouge-code"><pre>Get-WmiObject -Namespace root\SecurityCenter2 -Class AntiVirusProduct
+</pre></table></code></div></div><p>虚拟机检测</p><div class="language-plaintext highlighter-rouge"><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+</pre><td class="rouge-code"><pre>$VMwareDetected = $False
+$VMAdapter = Get-WmiObject Win32_NetworkAdapter -Filter 'Manufacturer LIKE
+"%VMware%" OR Name LIKE "%VMware%"'
+$VMBios = Get-WmiObject Win32_BIOS -Filter 'SerialNumber LIKE "%VMware%"'
+$VMToolsRunning = Get-WmiObject Win32_Process -Filter 'Name="vmtoolsd.exe"'
+if ($VMAdapter -or $VMBios -or $VMToolsRunning) 
+{ 
+	$VMwareDetected = $True 
+	"in vm"
+} 
+else
+{
+	"not in vm"
+}
+</pre></table></code></div></div><div class="language-plaintext highlighter-rouge"><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+</pre><td class="rouge-code"><pre>$VMDetected = $False
+$Arguments = @{
+ Class = 'Win32_ComputerSystem'
+ Filter = 'NumberOfLogicalProcessors &lt; 2 AND TotalPhysicalMemory &lt; 2147483648'
+}
+if (Get-WmiObject @Arguments) { 
+    $VMDetected = $True
+    "In vm"
+ } 
+ else{
+ 	"Not in vm"
+ }
+</pre></table></code></div></div><div class="language-plaintext highlighter-rouge"><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+</pre><td class="rouge-code"><pre>wmic /NAMESPACE:"\\root\CIMV2" PATH Win32_ComputerSystem GET NumberOfLogicalProcessors,TotalPhysicalMemory /FORMAT:list
+</pre></table></code></div></div><h2 id="2-持久化">2. 持久化</h2><p>开机超过180s，每5s启动一次notepad.exe</p><div class="language-plaintext highlighter-rouge"><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+</pre><td class="rouge-code"><pre>//管理员权限
+$wmiParams = @{
+    Computername = $env:COMPUTERNAME
+    ErrorAction = 'Stop'
+    NameSpace = 'root\subscription'
+}
+$wmiParams.Class = '__EventFilter'
+$wmiParams.Arguments = @{
+    Name = 'evil'
+    EventNamespace = 'root\CIMV2'
+    QueryLanguage = 'WQL'
+    Query = "select * from __InstanceModificationEvent within 5 where targetInstance isa 'Win32_PerfFormattedData_PerfOS_System' and targetInstance.SystemUpTime &gt;= 180 "
+}
+$filterResult = Set-WmiInstance @wmiParams
+
+
+$wmiParams.Class = 'CommandLineEventConsumer'
+$wmiParams.Arguments = @{
+    Name = 'evil'
+    CommandLineTemplate = 'C:\Windows\System32\notepad.exe'
+}
+$consumerResult = Set-WmiInstance @wmiParams
+
+$wmiParams.Class = '__FilterToConsumerBinding'
+$wmiParams.Arguments = @{
+    Filter = $filterResult
+    Consumer = $consumerResult
+}
+$bindingResult = Set-WmiInstance @wmiParams
+</pre></table></code></div></div><p><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-src="/assets/img/image-20200903151901734.png" alt="image-20200903151901734" /></p><p>查看WMI后门</p><div class="language-plaintext highlighter-rouge"><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+</pre><td class="rouge-code"><pre>//管理员权限
+#List Event Filters
+Get-WMIObject -Namespace root\Subscription -Class __EventFilter
+
+#List Event Consumers
+Get-WMIObject -Namespace root\Subscription -Class __EventConsumer
+
+#List Event Bindings
+Get-WMIObject -Namespace root\Subscription -Class __FilterToConsumerBinding
+</pre></table></code></div></div><p>删除WMI后门</p><div class="language-plaintext highlighter-rouge"><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+</pre><td class="rouge-code"><pre>//管理员权限
+#Filter
+Get-WMIObject -Namespace root\Subscription -Class __EventFilter -Filter "Name='evil'" | Remove-WmiObject -Verbose
+
+#Consumer
+Get-WMIObject -Namespace root\Subscription -Class CommandLineEventConsumer -Filter "Name='evil'" | Remove-WmiObject -Verbose
+
+#Binding
+Get-WMIObject -Namespace root\Subscription -Class __FilterToConsumerBinding -Filter "__Path LIKE '%evil%'" | Remove-WmiObject -Verbose
+</pre></table></code></div></div><h2 id="3-横向移动">3. 横向移动</h2><div class="language-plaintext highlighter-rouge"><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+</pre><td class="rouge-code"><pre>wmic /node:192.168.240.144 /user:ring2\win10 /password:trend#1. process call create "notepad.exe"
+wmic /node:192.168.240.144 /user:ring2\win10 /password:trend#1. process where name="notepad.exe" delete
+</pre></table></code></div></div><p><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-src="/assets/img/image-20200903142217578.png" alt="image-20200903142217578" /></p><p>如果出现RPC 服务器不可用”这个错误，可以确认下防火墙入站规则中是否开启了wmi</p><p><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-src="/assets/img/1963614-20200315091802828-1562494016.png" alt="img" /></p><h2 id="4-存储payload">4. 存储payload</h2><p>把payload 存储在类属性中，不会留下文件，实际位于硬盘上的一个复杂的数据库中(objects.data)</p><div class="language-plaintext highlighter-rouge"><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+</pre><td class="rouge-code"><pre>【管理员权限】
+
+# 新建evil ManagementClass
+$evilClass = New-Object System.Management.ManagementClass("root\cimv2", $null, $null) 
+$evilClass.__CLASS = "evil"
+$evilClass.Properties.Add("Code", [System.Management.CimType]::String, $false)
+$command = "Start-Process notepad.exe"
+$bytes = [System.Text.Encoding]::Unicode.GetBytes($command)
+$encodedCommand = [Convert]::ToBase64String($bytes)
+$evilClass.Properties["Code"].Value = $encodedCommand
+$evilClass.Put() 
+
+# 执行储存在evil class属性中的代码
+$code = ([wmiclass]"\\.\root\cimv2:evil").Properties["Code"].value 
+powershell.exe -enc $code
+
+# 删除
+$evilClass.delete()
+</pre></table></code></div></div><h1 id="更多">更多</h1><h2 id="1-wmi订阅">1. WMI订阅</h2><p>以监控到notepad.exe启动后记录日志为例</p><p>powershell cmdlet Set-WmiInstance支持创建一个WMI Instance</p><div class="language-plaintext highlighter-rouge"><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+</pre><td class="rouge-code"><pre>#wmiParams字典用于Splatting, 指定3个参数 -Computername, -ErrorAction, -Namespace
+$wmiParams = @{
+    Computername = $env:COMPUTERNAME
+    ErrorAction = 'Stop'
+    NameSpace = 'root\subscription'
+}
+
+#新建Filter, $wmiParams.Arguments就是Set-WmiInstance命令里的-Arguments参数，其值是__EventFilter构造函数所需参数
+$wmiParams.Class = '__EventFilter'
+$wmiParams.Arguments = @{
+    Name = 'ProcessFilter'
+    EventNamespace = 'root\CIMV2'
+    QueryLanguage = 'WQL'
+    Query = "select * from __InstanceCreationEvent within 5 where targetInstance isa 'Win32_Process' and targetInstance.Name = 'Notepad.exe' "
+}
+$filterResult = Set-WmiInstance @wmiParams
+
+
+#同理，新建Consumer
+$wmiParams.Class = 'LogFileEventConsumer'
+$wmiParams.Arguments = @{
+    Name = 'ProcessConsumer'
+    Text = 'A process has been created: %TargetInstance.Name%'
+    FileName = $env:USERPROFILE + "\Desktop\log.log"
+}
+$consumerResult = Set-WmiInstance @wmiParams
+
+#同理，新建Binding
+$wmiParams.Class = '__FilterToConsumerBinding'
+$wmiParams.Arguments = @{
+    Filter = $filterResult
+    Consumer = $consumerResult
+}
+$bindingResult = Set-WmiInstance @wmiParams
+
+##移除WMI订阅事件
+#Filter
+Get-WMIObject -Namespace root\Subscription -Class __EventFilter -Filter "Name='ProcessFilter'" | Remove-WmiObject -Verbose
+#Consumer
+Get-WMIObject -Namespace root\Subscription -Class LogFileEventConsumer -Filter "Name='ProcessConsumer'" | Remove-WmiObject -Verbose
+#Binding
+Get-WMIObject -Namespace root\Subscription -Class __FilterToConsumerBinding -Filter "__Path LIKE '%ProcessFilter%'"  | Remove-WmiObject -Verbose
+</pre></table></code></div></div><p>也可以用原生.Net类ManagementClass创建WMI Instance。</p><div class="language-plaintext highlighter-rouge"><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+</pre><td class="rouge-code"><pre>#Creating a new event filter
+$instanceFilter = ([wmiclass]"\\.\root\subscription:__EventFilter").CreateInstance()
+$instanceFilter.QueryLanguage = "WQL"
+$instanceFilter.Query = "select * from __InstanceCreationEvent within 5 where targetInstance isa 'Win32_Process' and targetInstance.Name = 'Notepad.exe'"
+$instanceFilter.Name = "ProcessFilter"
+$instanceFilter.EventNamespace = 'root\cimv2'
+$result = $instanceFilter.Put()
+$newFilter = $result.Path
+
+#Creating a new event consumer
+$instanceConsumer = ([wmiclass]"\\.\root\subscription:LogFileEventConsumer").CreateInstance()
+$instanceConsumer.Name = 'LogFileEventConsumer'
+$instanceConsumer.Filename = $env:USERPROFILE + "\Desktop\log2.log"
+$instanceConsumer.Text = 'A process has been created: %TargetInstance.Name%'
+$result = $instanceConsumer.Put()
+$newConsumer = $result.Path
+
+#Bind filter and consumer
+$instanceBinding = ([wmiclass]"\\.\root\subscription:__FilterToConsumerBinding").CreateInstance()
+$instanceBinding.Filter = $newFilter
+$instanceBinding.Consumer = $newConsumer
+$result = $instanceBinding.Put()
+$newBinding = $result.Path
+
+##Removing WMI Subscriptions using Remove-WMIObject
+([wmi]$newFilter).Delete()
+([wmi]$newConsumer).Delete()
+([wmi]$newBinding).Delete()
+</pre></table></code></div></div><p><em>%SystemRoot%\System32\wbem\Repository\OBJECTS.DATA</em> 下会记录WMI订阅的信息，如果怀疑感染后被设置WMI订阅驻留，除了powershell命令，也可以看看这个文件有没有特别的WMI 订阅。</p><p><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-src="/assets/img/1963614-20200327221519531-627324002.png" alt="img" /></p><p>除了LogFileEventConsumer，CommandLineEventConsumer，还可以使用ActiveScriptEventConsumer 执行脚本</p><p>（1）直接执行现有脚本</p><div class="language-plaintext highlighter-rouge"><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+</pre><td class="rouge-code"><pre>instance of ActiveScriptEventConsumer as $Cons
+{
+    Name = "ASEC";
+    ScriptingEngine = "VBScript";
+    ScriptFileName = "c:\\asec2.vbs";
+};
+</pre></table></code></div></div><p>（2）内嵌脚本，不会留下痕迹</p><div class="language-plaintext highlighter-rouge"><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+</pre><td class="rouge-code"><pre>instance of ActiveScriptEventConsumer as $Cons
+{
+    Name = "ASEC";
+    ScriptingEngine = "VBScript";
+
+    ScriptText =
+        "Dim objFS, objFile\n"
+        "Set objFS = CreateObject(\"Scripting.FileSystemObject\")\n"
+        "Set objFile = objFS.OpenTextFile(\"C:\\ASEC.log\","
+        " 8, true)\nobjFile.WriteLine \"Time: \" &amp; Now &amp; \";"
+        " Entry made by: ASEC\"\nobjFile.WriteLine"
+        " \"Application closed. UserModeTime:  \" &amp; "
+        "TargetEvent.TargetInstance.UserModeTime &amp;_\n"
+        "\"; KernelModeTime: \" &amp; "
+        "TargetEvent.TargetInstance.KernelModeTime "
+        "&amp; \" [hundreds of nanoseconds]\"\n"
+        "objFile.Close\n";
+};
+</pre></table></code></div></div><h2 id="2-系统监控">2. 系统监控</h2><h3 id="监视进程创建"><strong>监视进程创建</strong></h3><div class="language-plaintext highlighter-rouge"><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+</pre><td class="rouge-code"><pre> $filterName = 'BotFilter48'
+    $consumerName = 'BotConsumer48'
+
+    #查询进程创建事件
+
+    $Query = "SELECT * FROM __InstanceCreationEvent WITHIN 5 WHERE TargetInstance ISA 'Win32_Process'"
+
+    $WMIEventFilter = Set-WmiInstance -Class __EventFilter -NameSpace "root\subscription" -Arguments @{Name=$filterName;EventNameSpace="root\cimv2";QueryLanguage="WQL";Query=$Query} -ErrorAction Stop
+
+    #写入日志文件
+
+    $Arg =@{
+                Name=$consumerName
+                    Filename = 'C:\test\log.log'
+                    Text = 'New Process Created with name %TargetInstance.Name%'
+                }
+
+    $WMIEventConsumer = Set-WmiInstance -Class LogFileEventConsumer -Namespace "root\subscription" -Arguments $Arg
+
+    Set-WmiInstance -Class __FilterToConsumerBinding -Namespace "root\subscription" -Arguments @{Filter=$WMIEventFilter;Consumer=$WMIEventConsumer}
+</pre></table></code></div></div><h3 id="监视进程结束">监视进程结束</h3><div class="language-plaintext highlighter-rouge"><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+</pre><td class="rouge-code"><pre>$filterName = 'BotFilter49'
+$consumerName = 'BotConsumer49'
+
+
+# 查询进程结束事件
+
+$Query = "SELECT * FROM __InstanceDeletionEvent WITHIN 5 WHERE TargetInstance ISA 'Win32_Process'"
+$WMIEventFilter = Set-WmiInstance -Class __EventFilter -NameSpace "root\subscription" -Arguments @{Name=$filterName;EventNameSpace="root\cimv2";QueryLanguage="WQL";Query=$Query} -ErrorAction Stop
+
+$Arg =@{
+                Name=$consumerName
+                Filename = 'C:\test\log.log'
+                Text = 'Task kill with name %TargetInstance.Name%'
+    }
+$WMIEventConsumer = Set-WmiInstance -Class LogFileEventConsumer -Namespace "root\subscription" -Arguments $Arg
+
+Set-WmiInstance -Class __FilterToConsumerBinding -Namespace "root\subscription" -Arguments @{Filter=$WMIEventFilter;Consumer=$WMIEventConsumer}
+</pre></table></code></div></div><h3 id="监视注册表">监视注册表</h3><p>（1）监视单一键值</p><div class="language-plaintext highlighter-rouge"><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+</pre><td class="rouge-code"><pre>$filterName = 'BotFilter51'
+$consumerName = 'BotConsumer51'
+
+$Query ="SELECT * FROM RegistryKeyChangeEvent WHERE Hive='HKEY_LOCAL_MACHINE' AND KeyPath='SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run'" 
+
+$WMIEventFilter = Set-WmiInstance -Class __EventFilter -NameSpace "root\subscription" -Arguments @{Name=$filterName;EventNameSpace="root\default";QueryLanguage="WQL";Query=$Query} -ErrorAction Stop
+
+$Arg =@{
+                Name=$consumerName
+                Filename = 'C:\test\log.log'
+                Text ='The change is HKEY_LOCAL_MACHINE\\%KeyPath%'
+    }
+
+
+$WMIEventConsumer = Set-WmiInstance -Class LogFileEventConsumer -Namespace "root\subscription" -Arguments $Arg
+
+Set-WmiInstance -Class __FilterToConsumerBinding -Namespace "root\subscription" -Arguments @{Filter=$WMIEventFilter;Consumer=$WMIEventConsumer}
+</pre></table></code></div></div><p>(2)监视某一键值及其子键</p><p>监视 “<code class="language-plaintext highlighter-rouge">HKEY_LOCAL_MACHINE\\SOFTWARE\Microsoft</code>” 键值及其子键的任何改动</p><div class="language-plaintext highlighter-rouge"><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+</pre><td class="rouge-code"><pre>$filterName = 'BotFilter52'
+$consumerName = 'BotConsumer52'
+
+$Query ="SELECT * FROM RegistryTreeChangeEvent WHERE Hive='HKEY_LOCAL_MACHINE' AND RootPath='SOFTWARE\\Microsoft\\'" 
+
+$WMIEventFilter = Set-WmiInstance -Class __EventFilter -NameSpace "root\subscription" -Arguments @{Name=
+$filterName;EventNameSpace="root\default";QueryLanguage="WQL";Query=$Query} -ErrorAction Stop
+
+$Arg =@{
+                Name=$consumerName
+                Filename = 'C:\test\logtree.log'
+                Text ='The change is HKEY_LOCAL_MACHINE\\%RootPath%'
+    }
+
+$WMIEventConsumer = Set-WmiInstance -Class LogFileEventConsumer -Namespace "root\subscription" -Arguments $Arg
+Set-WmiInstance -Class __FilterToConsumerBinding -Namespace "root\subscription" -Arguments @{Filter=
+
+$WMIEventFilter;Consumer=$WMIEventConsumer}
+</pre></table></code></div></div></div><div class="post-tail-wrapper text-muted"><div class="post-meta mb-3"> <i class="far fa-folder-open fa-fw mr-1"></i> <a href='/categories/%E5%9F%9F%E5%AE%89%E5%85%A8/'>域安全</a>, <a href='/categories/ta0002%E6%89%A7%E8%A1%8C/'>TA0002执行</a></div><div class="post-tags"> <i class="fa fa-tags fa-fw mr-1"></i> <a href="/tags/powershell/" class="post-tag no-text-decoration" >powershell</a> <a href="/tags/wmi/" class="post-tag no-text-decoration" >wmi</a> <a href="/tags/ta0002%E6%89%A7%E8%A1%8C/" class="post-tag no-text-decoration" >TA0002执行</a></div><div class="post-tail-bottom d-flex justify-content-between align-items-center mt-3 pt-5 pb-2"><div class="license-wrapper"> This post is licensed under <a href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a> by the author.</div><div class="share-wrapper"> <span class="share-label text-muted mr-1">Share</span> <span class="share-icons"> <a href="https://twitter.com/intent/tweet?text=Powershell使用WMI - 我的学习笔记&url=https://ringlcy.github.io/posts/Powershell%E4%BD%BF%E7%94%A8WMI/" data-toggle="tooltip" data-placement="top" title="Twitter" target="_blank" rel="noopener" aria-label="Twitter"> <i class="fa-fw fab fa-twitter"></i> </a> <a href="https://www.facebook.com/sharer/sharer.php?title=Powershell使用WMI - 我的学习笔记&u=https://ringlcy.github.io/posts/Powershell%E4%BD%BF%E7%94%A8WMI/" data-toggle="tooltip" data-placement="top" title="Facebook" target="_blank" rel="noopener" aria-label="Facebook"> <i class="fa-fw fab fa-facebook-square"></i> </a> <a href="https://telegram.me/share?text=Powershell使用WMI - 我的学习笔记&url=https://ringlcy.github.io/posts/Powershell%E4%BD%BF%E7%94%A8WMI/" data-toggle="tooltip" data-placement="top" title="Telegram" target="_blank" rel="noopener" aria-label="Telegram"> <i class="fa-fw fab fa-telegram"></i> </a> <i class="fa-fw fas fa-link small" onclick="copyLink()" data-toggle="tooltip" data-placement="top" title="Copy link"></i> </span></div></div></div></div></div><div id="panel-wrapper" class="col-xl-3 pl-2 text-muted topbar-down"><div class="access"><div id="access-tags"> <span>Trending Tags</span><div class="d-flex flex-wrap mt-3 mb-1 mr-3"> <a class="post-tag" href="/tags/ta0006%E5%87%AD%E6%8D%AE%E8%AE%BF%E9%97%AE/">TA0006凭据访问</a> <a class="post-tag" href="/tags/ta0003%E6%8C%81%E4%B9%85%E5%8C%96/">TA0003持久化</a> <a class="post-tag" href="/tags/mimikatz/">mimikatz</a> <a class="post-tag" href="/tags/ta0004%E6%9D%83%E9%99%90%E5%8D%87%E7%BA%A7/">TA0004权限升级</a> <a class="post-tag" href="/tags/ta0008%E6%A8%AA%E5%90%91%E7%A7%BB%E5%8A%A8/">TA0008横向移动</a> <a class="post-tag" href="/tags/activedirectory/">ActiveDirectory</a> <a class="post-tag" href="/tags/adminsdholder/">AdminSDHolder</a> <a class="post-tag" href="/tags/as-rep-roasting/">AS-REP Roasting</a> <a class="post-tag" href="/tags/dcshadow/">DCShadow</a> <a class="post-tag" href="/tags/dcsync/">dcsync</a></div></div></div><script src="https://cdn.jsdelivr.net/gh/afeld/bootstrap-toc@1.0.1/dist/bootstrap-toc.min.js"></script><div id="toc-wrapper" class="pl-0 pr-4 mb-5"> <span class="pl-3 pt-2 mb-2">Contents</span><nav id="toc" data-toggle="toc"></nav></div></div></div><div class="row"><div class="col-12 col-lg-11 col-xl-8"><div id="post-extend-wrapper" class="pl-1 pr-1 pl-sm-2 pr-sm-2 pl-md-4 pr-md-4"><div id="related-posts" class="mt-5 mb-2 mb-sm-4"><h3 class="pt-2 mt-1 mb-4 ml-1" data-toc-skip>Further Reading</h3><div class="card-deck mb-4"><div class="card"> <a href="/posts/DNSAdmin/"><div class="card-body"> <span class="timeago small" > Dec 31, 2020 <i class="unloaded">2020-12-31T23:59:55+08:00</i> </span><h3 class="pt-0 mt-1 mb-3" data-toc-skip>DNSAdmin</h3><div class="text-muted small"><p> 0x00 简介 感染DNSAdmin组用户，为DNS服务配置恶意ServerLevelPluginDll，DNS服务会以system权限加载该Dll，从而达到提权目的。 参考： https://github.com/kazkansouh/DNSAdmin-DLL Feature, not bug: DNSAdmin to DC compromise in one line Abus...</p></div></div></a></div><div class="card"> <a href="/posts/%E5%88%A9%E7%94%A8cachedGroupPolicySettings%E5%85%B3%E9%97%ADScriptBlockLogging/"><div class="card-body"> <span class="timeago small" > Dec 31, 2020 <i class="unloaded">2020-12-31T23:59:55+08:00</i> </span><h3 class="pt-0 mt-1 mb-3" data-toc-skip>利用cachedGroupPolicySettings关闭ScriptBlockLogging</h3><div class="text-muted small"><p> 参考： PowerShell ScriptBlock Logging Bypass In Windows 10 / PowerShell 5.0, Microsoft introduced several new security features in PowerShell. These included the AMSI, Protected Event Logging, and m...</p></div></div></a></div><div class="card"> <a href="/posts/Kerberoasting/"><div class="card-body"> <span class="timeago small" > Dec 31, 2020 <i class="unloaded">2020-12-31T23:59:56+08:00</i> </span><h3 class="pt-0 mt-1 mb-3" data-toc-skip>Kerberoasting</h3><div class="text-muted small"><p> Kerberoasting SPN(Service Principal Name) SPN，即Service Principal Name，客户端通过Kerberos请求使用某种服务时，会在请求中附带上需要访问的服务的SPN名称，如文件共享服务cifs/DNS_DOMAIN_NAME，目录访问服务ldap/DNS_DOMAIN_NAME。KDC（密钥分发中心）将通过SPN来确定客户端请求...</p></div></div></a></div></div></div><div class="post-navigation d-flex justify-content-between"> <a href="/posts/AdminSDHolder/" class="btn btn-outline-primary" prompt="Older"><p>AdminSDHolder</p></a> <a href="/posts/SMB%E5%8D%8F%E8%AE%AE%E4%B8%8EIPC$/" class="btn btn-outline-primary" prompt="Newer"><p>SMB协议与IPC$</p></a></div></div></div></div><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lozad/dist/lozad.min.js"></script> <script type="text/javascript"> const imgs = document.querySelectorAll('.post-content img'); const observer = lozad(imgs); observer.observe(); </script><footer class="d-flex w-100 justify-content-center"><div class="d-flex justify-content-between align-items-center"><div class="footer-left"><p class="mb-0"> © 2021 <a href=""></a>. <span data-toggle="tooltip" data-placement="top" title="Except where otherwise noted, the blog posts on this site are licensed under the Creative Commons Attribution 4.0 International (CC BY 4.0) License by the author.">Some rights reserved.</span></p></div><div class="footer-right"><p class="mb-0"> Powered by <a href="https://jekyllrb.com" target="_blank" rel="noopener">Jekyll</a> with <a href="https://github.com/cotes2020/jekyll-theme-chirpy" target="_blank" rel="noopener">Chirpy</a> theme.</p></div></div></footer></div><div id="search-result-wrapper" class="d-flex justify-content-center unloaded"><div class="col-12 col-xl-11 post-content"><div id="search-hints"><h4 class="text-muted mb-4">Trending Tags</h4><a class="post-tag" href="/tags/ta0006%E5%87%AD%E6%8D%AE%E8%AE%BF%E9%97%AE/">TA0006凭据访问</a> <a class="post-tag" href="/tags/ta0003%E6%8C%81%E4%B9%85%E5%8C%96/">TA0003持久化</a> <a class="post-tag" href="/tags/mimikatz/">mimikatz</a> <a class="post-tag" href="/tags/ta0004%E6%9D%83%E9%99%90%E5%8D%87%E7%BA%A7/">TA0004权限升级</a> <a class="post-tag" href="/tags/ta0008%E6%A8%AA%E5%90%91%E7%A7%BB%E5%8A%A8/">TA0008横向移动</a> <a class="post-tag" href="/tags/activedirectory/">ActiveDirectory</a> <a class="post-tag" href="/tags/adminsdholder/">AdminSDHolder</a> <a class="post-tag" href="/tags/as-rep-roasting/">AS REP Roasting</a> <a class="post-tag" href="/tags/dcshadow/">DCShadow</a> <a class="post-tag" href="/tags/dcsync/">dcsync</a></div><div id="search-results" class="d-flex flex-wrap justify-content-center text-muted mt-3"></div></div></div></div><div id="mask"></div><a id="back-to-top" href="#" aria-label="back-to-top" class="btn btn-lg btn-box-shadow" role="button"> <i class="fas fa-angle-up"></i> </a> <script src="https://cdn.jsdelivr.net/npm/simple-jekyll-search@1.7.3/dest/simple-jekyll-search.min.js"></script> <script> SimpleJekyllSearch({ searchInput: document.getElementById('search-input'), resultsContainer: document.getElementById('search-results'), json: '/assets/js/data/search.json', searchResultTemplate: '<div class="pl-1 pr-1 pl-sm-2 pr-sm-2 pl-lg-4 pr-lg-4 pl-xl-0 pr-xl-0"> <a href="https://ringlcy.github.io{url}">{title}</a><div class="post-meta d-flex flex-column flex-sm-row text-muted mt-1 mb-1"><div class="mr-sm-4"><i class="far fa-folder fa-fw"></i>{categories}</div><div><i class="fa fa-tag fa-fw"></i>{tags}</div></div><p>{snippet}</p></div>', noResultsText: '<p class="mt-5">Oops! No result founds.</p>' }); </script>

